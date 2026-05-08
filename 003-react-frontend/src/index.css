@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-dark: #0f172a;
+  --color-card: rgba(30, 41, 59, 0.4);
+  --color-card-hover: rgba(30, 41, 59, 0.6);
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  
+  --color-accent-cyan: #06b6d4;
+  --color-accent-emerald: #10b981;
+  --color-accent-amber: #f59e0b;
+  
+  --font-outfit: "Outfit", sans-serif;
+}
+
+@layer base {
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+  body {
+    @apply bg-bg-dark text-slate-50 font-outfit min-h-screen antialiased;
+    background-image: 
+      radial-gradient(circle at 15% 50%, rgba(6, 182, 212, 0.08), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.08), transparent 25%);
+    background-attachment: fixed;
+  }
+}
+
+@utility glass-panel {
+  @apply bg-card backdrop-blur-xl border border-border-subtle rounded-3xl shadow-2xl transition-all duration-300;
+}
+
+@utility glass-panel-hover {
+  @apply hover:bg-card-hover hover:border-white/15 hover:-translate-y-0.5;
+}
+
+@utility animate-glow {
+  animation: pulse-glow 3s infinite ease-in-out;
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px currentColor);
+  }
+  50% {
+    filter: drop-shadow(0 0 16px currentColor);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  @apply w-2 h-2;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-slate-900/50 rounded;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-700/30 rounded hover:bg-slate-700/50;
+}
