@@ -1,0 +1,107 @@
+version: '3.8'
+
+services:
+  # 1. MQTT Broker
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: chili-mosquitto
+    restart: always
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    networks:
+      - chili-network
+
+  # 2. Database PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: chili-db
+    restart: always
+    environment:
+      POSTGRES_DB: irrigation_db
+      POSTGRES_USER: kams
+      POSTGRES_PASSWORD: kam439
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - chili-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kams -d irrigation_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # 3. Python Fuzzy Logic Service
+  python-service:
+    build:
+      context: ./001-python-service
+    container_name: chili-python-service
+    restart: always
+    environment:
+      MQTT_HOST: mosquitto
+      MQTT_PORT: 1883
+      MQTT_TOPIC_SENSOR: chili/sensors/data
+      MQTT_TOPIC_CONTROL: chili/pump/control
+      MQTT_TOPIC_STATUS: chili/pump/status
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: irrigation_db
+      DB_USER: kams
+      DB_PASSWORD: kam439
+      PUMP_THRESHOLD: 20
+    depends_on:
+      db:
+        condition: service_healthy
+      mosquitto:
+        condition: service_started
+    networks:
+      - chili-network
+
+  # 4. Express Node.js Backend API
+  backend:
+    build:
+      context: ./002-backend-nodejs
+    container_name: chili-backend
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: irrigation_db
+      DB_USER: kams
+      DB_PASSWORD: kam439
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - chili-network
+
+  # 5. React Frontend Dashboard
+  frontend:
+    build:
+      context: ./003-react-frontend
+    container_name: chili-frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - mosquitto
+    networks:
+      - chili-network
+
+volumes:
+  postgres_data:
+
+networks:
+  chili-network:
+    driver: bridge
