@@ -4,3 +4,4 @@ numpy==1.26.4
 psycopg[binary]
 psycopg-pool
 python-dotenv==1.0.1
+matplotlib
