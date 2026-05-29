@@ -68,7 +68,14 @@ function App() {
     }
   }, [liveData]);
 
-  const currentData = liveData || (historyData.length > 0 ? historyData[historyData.length - 1] : { suhu: 0, kelembapanUdara: 0, kelembapanTanah: 0 });
+  // Normalize liveData keys from snake_case (MQTT) to camelCase (used by StatCards)
+  const normalizedLiveData = liveData ? {
+    suhu: liveData.suhu,
+    kelembapanUdara: liveData.kelembapan_udara ?? liveData.kelembapanUdara,
+    kelembapanTanah: liveData.kelembapan_tanah ?? liveData.kelembapanTanah,
+    time: liveData.time,
+  } : null;
+  const currentData = normalizedLiveData || (historyData.length > 0 ? historyData[historyData.length - 1] : { suhu: 0, kelembapanUdara: 0, kelembapanTanah: 0 });
   const prevData = historyData.length > 1 ? historyData[historyData.length - 2] : currentData;
 
   const getTrend = (current, previous) => {
