@@ -41,12 +41,12 @@ export default function FuzzyTable({ data }) {
             {data.slice(0, 10).map((row, idx) => (
               <tr key={idx} className="border-b border-hairline-soft hover:bg-surface-soft transition-colors">
                 <td className="px-4 py-3 text-ink font-medium">{new Date(row.created_at).toLocaleTimeString('id-ID')}</td>
-                <td className="px-4 py-3 text-ink">{row.suhu_val !== undefined ? row.suhu_val : '-'}°C</td>
-                <td className="px-4 py-3 text-ink">{row.kelembapan_tanah_val !== undefined ? row.kelembapan_tanah_val : '-'}%</td>
+                <td className="px-4 py-3 text-ink">{row.suhu_val !== undefined ? Number(row.suhu_val).toFixed(1) : '-'}°C</td>
+                <td className="px-4 py-3 text-ink">{row.kelembapan_tanah_val !== undefined ? Number(row.kelembapan_tanah_val).toFixed(1) : '-'}%</td>
                 <td className="px-4 py-3 text-ink">
                   {row.output_durasi !== undefined ? (
                     <div className="flex items-center gap-1.5">
-                      <span className="font-semibold">{row.output_durasi} detik</span>
+                      <span className="font-semibold">{Number(row.output_durasi).toFixed(1)} detik</span>
                       {Number(row.output_durasi) > 0 && <Droplets size={14} className="text-brand-teal" />}
                     </div>
                   ) : '-'}

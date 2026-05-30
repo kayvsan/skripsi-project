@@ -22,9 +22,9 @@ export default function HistoryTable({ data }) {
             {data.slice(0, 10).map((row, idx) => (
               <tr key={idx} className="border-b border-hairline-soft hover:bg-surface-soft transition-colors">
                 <td className="px-4 py-3 text-ink font-medium">{row.time}</td>
-                <td className="px-4 py-3 text-ink">{row.suhu}°C</td>
-                <td className="px-4 py-3 text-ink">{row.kelembapanUdara}%</td>
-                <td className="px-4 py-3 text-ink">{row.kelembapanTanah}%</td>
+                <td className="px-4 py-3 text-ink">{Number(row.suhu).toFixed(1)}°C</td>
+                <td className="px-4 py-3 text-ink">{Number(row.kelembapanUdara).toFixed(1)}%</td>
+                <td className="px-4 py-3 text-ink">{Number(row.kelembapanTanah).toFixed(1)}%</td>
               </tr>
             ))}
           </tbody>
