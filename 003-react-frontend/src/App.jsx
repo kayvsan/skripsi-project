@@ -4,6 +4,8 @@ import StatCard from './components/StatCard';
 import TrendChart from './components/TrendChart';
 import HistoryTable from './components/HistoryTable';
 import FuzzyTable from './components/FuzzyTable';
+import TabNav from './components/TabNav';
+import KpiPage from './components/KpiPage';
 import PumpStatus from './components/PumpStatus';
 import IrrigationLogs from './components/IrrigationLogs';
 import { useMqtt } from './lib/mqtt';
@@ -11,6 +13,7 @@ import { getHistory, getIrrigationLogs, getStats, getFuzzyDecisions, downloadHis
 
 function App() {
   const { isConnected, liveData, pumpStatus } = useMqtt();
+  const [activeTab, setActiveTab] = useState('monitoring');
   const [historyData, setHistoryData] = useState([]);
   const [irrigationLogs, setIrrigationLogs] = useState([]);
   const [fuzzyDecisions, setFuzzyDecisions] = useState([]);
@@ -150,7 +153,10 @@ function App() {
         </div>
       </header>
 
-      <main className="space-y-8">
+      <TabNav activeTab={activeTab} setActiveTab={setActiveTab} />
+
+      {activeTab === 'monitoring' ? (
+        <main className="space-y-8">
         
         {/* Stats Summary Section */}
         {stats && (
@@ -230,6 +236,9 @@ function App() {
           </div>
         </div>
       </main>
+      ) : (
+        <KpiPage startDate={startDate} endDate={endDate} />
+      )}
     </div>
   );
 }

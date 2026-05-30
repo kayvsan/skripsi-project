@@ -10,11 +10,17 @@
   --color-accent-emerald: #10b981;
   --color-accent-amber: #f59e0b;
   
+  /* Brand Tokens from DESIGN.md */
+  --color-brand-purple: #4d0dd9;
+  --color-brand-purple-light: #7b42f5;
+  --color-text-inverse: #435270;
+  
   --font-outfit: "Outfit", sans-serif;
+  --font-rubik: "Rubik", sans-serif;
 }
 
 @layer base {
-  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Rubik:wght@400;500;600;700&display=swap');
 
   body {
     @apply bg-bg-dark text-slate-50 font-outfit min-h-screen antialiased;
@@ -27,6 +33,12 @@
 
 @utility glass-panel {
   @apply bg-card backdrop-blur-xl border border-border-subtle rounded-3xl shadow-2xl transition-all duration-300;
+}
+
+/* KPI Panel based on DESIGN.md */
+@utility kpi-panel {
+  @apply bg-black backdrop-blur-xl border border-[#e4e4e7]/20 rounded-[12px] transition-all duration-300;
+  box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(77, 13, 217) 0px 4px 0px 0px;
 }
 
 @utility glass-panel-hover {

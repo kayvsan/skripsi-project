@@ -22,6 +22,17 @@ export const getFuzzyDecisions = async (limit = 50, startDate = null, endDate = 
   return response.data;
 };
 
+export const getKpiData = async (startDate = null, endDate = null) => {
+  let url = '/kpi';
+  if (startDate || endDate) {
+    url += '?';
+    if (startDate) url += `startDate=${startDate}&`;
+    if (endDate) url += `endDate=${endDate}`;
+  }
+  const response = await api.get(url);
+  return response.data;
+};
+
 export const getIrrigationLogs = async (limit = 20) => {
   const response = await api.get('/irrigation-logs');
   return response.data;
