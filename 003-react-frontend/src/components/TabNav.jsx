@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function TabNav({ activeTab, setActiveTab }) {
   return (
-    <div className="flex gap-2 mb-8 bg-surface p-1.5 rounded-[16px] w-fit border border-border-default shadow-[var(--shadow-custom)]">
+    <div className="flex gap-2 mb-8 bg-surface p-1.5 rounded-[16px] w-fit border border-border-default">
       <button
         onClick={() => setActiveTab('monitoring')}
         className={`

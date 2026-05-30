@@ -6,16 +6,16 @@ import {
 } from 'recharts';
 import { Target, Activity, Droplets } from 'lucide-react';
 
-const COLORS = ['#10b981', '#06b6d4', '#f59e0b', '#ef4444'];
+const COLORS = ['#94a3b8', '#10b981', '#06b6d4', '#4d0dd9'];
 const BRAND_PURPLE = '#4d0dd9';
 
 // Komponen KPI Card kecil yang reusable
-function KpiCard({ title, value, subValue, icon: Icon }) {
+function KpiCard({ title, value, subValue, icon: Icon, colorClass = "text-brand", bgClass = "bg-brand/10" }) {
   return (
     <div className="kpi-panel p-6 flex flex-col justify-between">
       <div className="flex justify-between items-start mb-4">
         <h3 className="text-text-secondary font-rubik text-sm font-semibold uppercase tracking-wider">{title}</h3>
-        <div className="p-2 rounded-lg bg-brand/10 text-brand">
+        <div className={`p-2 rounded-lg ${bgClass} ${colorClass}`}>
           <Icon size={20} />
         </div>
       </div>
@@ -74,18 +74,24 @@ export default function KpiPage({ startDate, endDate }) {
           value={`${kpiData.idealZonePercentage.toFixed(1)}%`}
           subValue="Persentase waktu kelembapan tanah optimal"
           icon={Target}
+          colorClass="text-accent-emerald"
+          bgClass="bg-accent-emerald/10"
         />
         <KpiCard 
           title="Total Frekuensi Siram" 
           value={`${totalIrrigationFreq}x`}
           subValue="Kali pompa menyala pada rentang tanggal"
           icon={Activity}
+          colorClass="text-accent-amber"
+          bgClass="bg-accent-amber/10"
         />
         <KpiCard 
           title="Estimasi Total Air" 
           value={`${(totalIrrigationDur / 100).toFixed(1)} L`} // Asumsi kasar: 100% durasi = 100 unit air, sesuaikan nanti
           subValue={`Dari total ${totalIrrigationDur.toFixed(0)} durasi pompa`}
           icon={Droplets}
+          colorClass="text-accent-cyan"
+          bgClass="bg-accent-cyan/10"
         />
       </div>
 

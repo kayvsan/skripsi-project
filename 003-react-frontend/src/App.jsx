@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Thermometer, Droplets, Sprout, Activity, Download, RefreshCcw } from 'lucide-react';
 import StatCard from './components/StatCard';
 import TrendChart from './components/TrendChart';
+import HistoryTable from './components/HistoryTable';
 import FuzzyTable from './components/FuzzyTable';
 import TabNav from './components/TabNav';
 import KpiPage from './components/KpiPage';
@@ -106,8 +107,10 @@ function App() {
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div>
           <div className="flex items-center gap-4 mb-2">
-            <Activity className="text-brand animate-glow" size={40} />
-            <h1 className="text-4xl font-bold text-text-primary">
+            <div className="p-2.5 bg-accent-emerald/10 rounded-2xl border border-accent-emerald/20">
+              <Sprout className="text-accent-emerald" size={36} />
+            </div>
+            <h1 className="text-4xl font-bold text-text-primary tracking-tight">
               ChiliSmart Dashboard
             </h1>
           </div>
@@ -123,7 +126,7 @@ function App() {
         <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3">
           <ThemeToggle />
           
-          <div className="flex items-center gap-2 bg-surface p-1.5 rounded-[12px] border border-border-default shadow-[var(--shadow-custom)]">
+          <div className="flex items-center gap-2 bg-surface p-1.5 rounded-[12px] border border-border-default">
             <input 
               type="date" 
               value={startDate}
@@ -140,7 +143,7 @@ function App() {
           </div>
           <button 
             onClick={fetchData}
-            className="flex items-center justify-center gap-2 px-4 py-2 h-[38px] rounded-[12px] bg-surface hover:-translate-y-[2px] text-text-primary transition-all duration-150 text-sm font-medium border border-border-default shadow-[var(--shadow-custom)]"
+            className="flex items-center justify-center gap-2 px-4 py-2 h-[38px] rounded-[12px] bg-surface hover:-translate-y-[2px] text-text-primary transition-all duration-150 text-sm font-medium border border-border-default"
           >
             <RefreshCcw size={16} className={loading ? 'animate-spin' : ''} />
             Refresh
