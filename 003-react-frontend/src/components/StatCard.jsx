@@ -1,8 +1,18 @@
 import React from 'react';
 
 export default function StatCard({ title, value, unit, icon: Icon, color, trend }) {
+  // Calculate percentage for the SVG circle dasharray
+  // Assuming standard ranges: Temp (0-50), Humidity (0-100), Soil (0-100)
+  let max = 100;
+  if (unit === '°C') max = 50;
+  
+  const percentage = Math.min(Math.max((Number(value) / max) * 100, 0), 100);
+  const radius = 36;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (percentage / 100) * circumference;
+
   return (
-    <div className="glass-panel glass-panel-hover p-6 flex flex-col gap-4">
+    <div className="glass-panel glass-panel-hover p-6 flex flex-col justify-between gap-4">
       <div className="flex justify-between items-start">
         <div>
           <h3 className="text-slate-400 text-base font-medium mb-2">{title}</h3>
@@ -11,16 +21,41 @@ export default function StatCard({ title, value, unit, icon: Icon, color, trend 
             <span className="text-lg text-slate-400">{unit}</span>
           </div>
         </div>
-        <div 
-          className="p-3 rounded-2xl flex items-center justify-center"
-          style={{ backgroundColor: `${color}20`, color: color }}
-        >
-          <Icon size={28} className="animate-glow" />
+        
+        {/* SVG Circular Gauge */}
+        <div className="relative flex items-center justify-center w-[90px] h-[90px]">
+          {/* Background circle */}
+          <svg className="absolute w-full h-full transform -rotate-90">
+            <circle
+              cx="45"
+              cy="45"
+              r={radius}
+              stroke={`${color}20`}
+              strokeWidth="8"
+              fill="none"
+            />
+            {/* Progress circle */}
+            <circle
+              cx="45"
+              cy="45"
+              r={radius}
+              stroke={color}
+              strokeWidth="8"
+              fill="none"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              strokeLinecap="round"
+              className="transition-all duration-1000 ease-out"
+            />
+          </svg>
+          <div className="absolute flex items-center justify-center" style={{ color: color }}>
+            <Icon size={24} className="animate-pulse" />
+          </div>
         </div>
       </div>
       
       {trend !== undefined && (
-        <div className="flex items-center gap-2 text-sm">
+        <div className="flex items-center gap-2 text-sm mt-2">
           <span className={`font-semibold flex items-center ${trend >= 0 ? 'text-accent-emerald' : 'text-accent-amber'}`}>
             {trend >= 0 ? '↑' : '↓'} {Math.abs(trend)}%
           </span>

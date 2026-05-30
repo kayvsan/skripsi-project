@@ -6,8 +6,19 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-export const getHistory = async (limit = 50) => {
-  const response = await api.get(`/history?limit=${limit}`);
+export const getHistory = async (limit = 50, startDate = null, endDate = null) => {
+  let url = `/history?limit=${limit}`;
+  if (startDate) url += `&startDate=${startDate}`;
+  if (endDate) url += `&endDate=${endDate}`;
+  const response = await api.get(url);
+  return response.data;
+};
+
+export const getFuzzyDecisions = async (limit = 50, startDate = null, endDate = null) => {
+  let url = `/fuzzy?limit=${limit}`;
+  if (startDate) url += `&startDate=${startDate}`;
+  if (endDate) url += `&endDate=${endDate}`;
+  const response = await api.get(url);
   return response.data;
 };
 

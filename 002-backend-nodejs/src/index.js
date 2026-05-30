@@ -5,6 +5,7 @@ require('dotenv').config();
 const historyRoutes = require('./routes/history');
 const irrigationRoutes = require('./routes/irrigation');
 const statsRoutes = require('./routes/stats');
+const fuzzyRoutes = require('./routes/fuzzy');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use('/api/history', historyRoutes);
 app.use('/api/irrigation-logs', irrigationRoutes);
 app.use('/api/stats', statsRoutes);
+app.use('/api/fuzzy', fuzzyRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

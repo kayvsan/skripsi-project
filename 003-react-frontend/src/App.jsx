@@ -3,24 +3,38 @@ import { Thermometer, Droplets, Sprout, Activity, Download, RefreshCcw } from 'l
 import StatCard from './components/StatCard';
 import TrendChart from './components/TrendChart';
 import HistoryTable from './components/HistoryTable';
+import FuzzyTable from './components/FuzzyTable';
 import PumpStatus from './components/PumpStatus';
 import IrrigationLogs from './components/IrrigationLogs';
 import { useMqtt } from './lib/mqtt';
-import { getHistory, getIrrigationLogs, getStats, downloadHistoryUrl } from './lib/api';
+import { getHistory, getIrrigationLogs, getStats, getFuzzyDecisions, downloadHistoryUrl } from './lib/api';
 
 function App() {
   const { isConnected, liveData, pumpStatus } = useMqtt();
   const [historyData, setHistoryData] = useState([]);
   const [irrigationLogs, setIrrigationLogs] = useState([]);
+  const [fuzzyDecisions, setFuzzyDecisions] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [startDate, setStartDate] = useState(() => {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d.toISOString().split('T')[0];
+  });
+  const [endDate, setEndDate] = useState(() => {
+    const d = new Date();
+    d.setHours(23, 59, 59, 999);
+    return d.toISOString().split('T')[0];
+  });
 
   const fetchData = async () => {
     try {
-      const [history, logs, currentStats] = await Promise.all([
-        getHistory(50),
+      setLoading(true);
+      const [history, logs, currentStats, fuzzy] = await Promise.all([
+        getHistory(50, startDate, endDate),
         getIrrigationLogs(20),
-        getStats()
+        getStats(),
+        getFuzzyDecisions(50, startDate, endDate)
       ]);
       
       // Transform DB data to match chart format
@@ -34,6 +48,7 @@ function App() {
       setHistoryData(formattedHistory);
       setIrrigationLogs(logs);
       setStats(currentStats);
+      setFuzzyDecisions(fuzzy);
     } catch (err) {
       console.error('Error fetching data:', err);
     } finally {
@@ -45,7 +60,7 @@ function App() {
     fetchData();
     const interval = setInterval(fetchData, 30000); // Refresh every 30s
     return () => clearInterval(interval);
-  }, []);
+  }, [startDate, endDate]);
 
   // Update real-time chart when new MQTT data arrives
   useEffect(() => {
@@ -102,25 +117,70 @@ function App() {
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3">
+          <div className="flex items-center gap-2 bg-slate-800/50 p-1.5 rounded-xl border border-white/5">
+            <input 
+              type="date" 
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="bg-slate-900/50 text-slate-300 text-sm px-3 py-1.5 rounded-lg border border-white/10 focus:outline-none focus:border-accent-emerald"
+            />
+            <span className="text-slate-500">to</span>
+            <input 
+              type="date" 
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="bg-slate-900/50 text-slate-300 text-sm px-3 py-1.5 rounded-lg border border-white/10 focus:outline-none focus:border-accent-emerald"
+            />
+          </div>
           <button 
             onClick={fetchData}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors text-sm font-medium border border-white/5"
+            className="flex items-center justify-center gap-2 px-4 py-2 h-[38px] rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors text-sm font-medium border border-white/5"
           >
             <RefreshCcw size={16} className={loading ? 'animate-spin' : ''} />
             Refresh
           </button>
           <a 
             href={downloadHistoryUrl}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-accent-emerald hover:bg-emerald-600 text-white transition-colors text-sm font-medium shadow-lg shadow-emerald-900/20"
+            className="flex items-center justify-center gap-2 px-4 py-2 h-[38px] rounded-xl bg-accent-emerald hover:bg-emerald-600 text-white transition-colors text-sm font-medium shadow-lg shadow-emerald-900/20"
           >
             <Download size={16} />
-            Export Data
+            Export
           </a>
         </div>
       </header>
 
       <main className="space-y-8">
+        
+        {/* Stats Summary Section */}
+        {stats && (
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="glass-panel p-4 flex items-center justify-between border-l-4 border-l-accent-emerald">
+              <div>
+                <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Rata-rata Suhu Hari Ini</p>
+                <p className="text-xl font-bold text-slate-50">{Number(stats.averageToday?.avg_suhu || 0).toFixed(1)}°C</p>
+              </div>
+            </div>
+            <div className="glass-panel p-4 flex items-center justify-between border-l-4 border-l-accent-cyan">
+              <div>
+                <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Rata-rata Kelembapan</p>
+                <p className="text-xl font-bold text-slate-50">{Number(stats.averageToday?.avg_hum || 0).toFixed(1)}%</p>
+              </div>
+            </div>
+            <div className="glass-panel p-4 flex items-center justify-between border-l-4 border-l-accent-emerald">
+              <div>
+                <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Rata-rata Tanah Basah</p>
+                <p className="text-xl font-bold text-slate-50">{Number(stats.averageToday?.avg_soil || 0).toFixed(1)}%</p>
+              </div>
+            </div>
+            <div className="glass-panel p-4 flex items-center justify-between border-l-4 border-l-accent-amber">
+              <div>
+                <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Total Penyiraman Hari Ini</p>
+                <p className="text-xl font-bold text-slate-50">{stats.totalIrrigationToday || 0} kali</p>
+              </div>
+            </div>
+          </div>
+        )}
         {/* Top Section: Metrics & Pump Status */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -163,6 +223,7 @@ function App() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
             <HistoryTable data={historyData} />
+            <FuzzyTable data={fuzzyDecisions} />
           </div>
           <div className="lg:col-span-1">
             <IrrigationLogs logs={irrigationLogs} />

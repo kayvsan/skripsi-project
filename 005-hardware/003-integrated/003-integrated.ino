@@ -6,9 +6,10 @@
 // ========================================
 //         KONFIGURASI WIFI & MQTT
 // ========================================
-const char* ssid = "YOUR_WIFI_SSID";
-const char* password = "YOUR_WIFI_PASSWORD";
-const char* mqtt_server = "YOUR_PC_IP_ADDRESS"; // Contoh: 192.168.1.10
+const char* ssid = "Lucifer";
+const char* password = "takonobapak1";
+const char* mqtt_server = "103.103.20.214";
+const int mqtt_port = 1883; // Contoh: 192.168.1.10
 
 // Topic MQTT
 const char* topic_sensor = "chili/sensors/data";
@@ -27,7 +28,10 @@ DHT dht(DHTPIN, DHTTYPE);
 WiFiClient espClient;
 PubSubClient client(espClient);
 
-long lastMsg = 0;
+unsigned long lastMsg = 0;
+bool pumpActive = false;
+unsigned long pumpStartTime = 0;
+unsigned long pumpDuration = 0;
 
 void setup_wifi() {
   delay(10);
@@ -61,21 +65,23 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   // Parse JSON command from Python Service
   StaticJsonDocument<200> doc;
-  deserializeJson(doc, message);
+  DeserializationError error = deserializeJson(doc, message);
+  
+  if (error) {
+    Serial.print("JSON parse error: ");
+    Serial.println(error.c_str());
+    return;
+  }
   
   const char* action = doc["action"];
   float duration_percent = doc["duration_percent"];
 
-  if (String(action) == "pump_on") {
+  if (String(action) == "pump_on" && !pumpActive) {
     Serial.println("PUMP ON triggered by Fuzzy Logic");
+    pumpActive = true;
+    pumpStartTime = millis();
+    pumpDuration = (unsigned long)(duration_percent / 100.0 * 300000.0);
     digitalWrite(RELAY_PIN, HIGH); // Nyalakan pompa
-    
-    // Hitung durasi nyala (mapping 0-100% ke misal 0-10 detik)
-    int pump_time_ms = map(duration_percent, 0, 100, 0, 10000); 
-    delay(pump_time_ms);
-    
-    digitalWrite(RELAY_PIN, LOW); // Matikan pompa
-    Serial.println("PUMP OFF");
   }
 }
 
@@ -113,9 +119,20 @@ void loop() {
   }
   client.loop();
 
-  long now = millis();
-  // Kirim data setiap 5 detik
-  if (now - lastMsg > 5000) {
+  unsigned long now = millis();
+  
+  // Non-blocking pump control
+  if (pumpActive && (now - pumpStartTime >= pumpDuration)) {
+    pumpActive = false;
+    digitalWrite(RELAY_PIN, LOW); // Matikan pompa
+    Serial.println("PUMP OFF (timer expired)");
+    
+    // Publish status OFF
+    client.publish(topic_status, "{\"pump\":\"OFF\",\"duration_percent\":0}");
+  }
+
+  // Kirim data setiap 30 detik
+  if (now - lastMsg > 30000) {
     lastMsg = now;
 
     float h = dht.readHumidity();
@@ -125,9 +142,8 @@ void loop() {
     // Map analog soil (0-4095) ke 0-100%
     // Catatan: Nilai analogRead tergantung jenis sensor (capacitive/resistive)
     // 4095 biasanya sangat kering, 1500 biasanya basah. Silakan kalibrasi.
-    float soilPercent = map(soilRaw, 4095, 1500, 0, 100);
-    if (soilPercent > 100) soilPercent = 100;
-    if (soilPercent < 0) soilPercent = 0;
+    float soilPercent = (float)(4095 - soilRaw) / (4095.0 - 1500.0) * 100.0;
+    soilPercent = constrain(soilPercent, 0.0, 100.0);
 
     if (isnan(h) || isnan(t)) {
       Serial.println("Failed to read from DHT sensor!");
