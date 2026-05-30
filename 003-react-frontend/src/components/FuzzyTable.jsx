@@ -5,11 +5,19 @@ export default function FuzzyTable({ data }) {
   const getCategoryColor = (category) => {
     switch(category) {
       case 'TIDAK PERLU': return 'bg-tint-gray text-charcoal';
-      case 'SEDIKIT': return 'bg-tint-sky text-charcoal';
-      case 'SEDANG': return 'bg-tint-mint text-charcoal';
-      case 'BANYAK': return 'bg-tint-lavender text-charcoal';
+      case 'SEDIKIT': return 'bg-tint-sky text-brand-teal';
+      case 'SEDANG': return 'bg-tint-mint text-brand-green';
+      case 'BANYAK': return 'bg-tint-lavender text-primary';
       default: return 'bg-surface text-slate';
     }
+  };
+
+  const getCategoryText = (durasi) => {
+    const d = Number(durasi);
+    if (!d || d === 0) return 'TIDAK PERLU';
+    if (d <= 3) return 'SEDIKIT';
+    if (d <= 7) return 'SEDANG';
+    return 'BANYAK';
   };
 
   return (
@@ -33,16 +41,21 @@ export default function FuzzyTable({ data }) {
             {data.slice(0, 10).map((row, idx) => (
               <tr key={idx} className="border-b border-hairline-soft hover:bg-surface-soft transition-colors">
                 <td className="px-4 py-3 text-ink font-medium">{new Date(row.created_at).toLocaleTimeString('id-ID')}</td>
-                <td className="px-4 py-3 text-ink">{row.suhu}°C</td>
-                <td className="px-4 py-3 text-ink">{row.kelembapan_tanah}%</td>
-                <td className="px-4 py-3 text-ink">{row.duration}</td>
+                <td className="px-4 py-3 text-ink">{row.suhu_val !== undefined ? row.suhu_val : '-'}°C</td>
+                <td className="px-4 py-3 text-ink">{row.kelembapan_tanah_val !== undefined ? row.kelembapan_tanah_val : '-'}%</td>
+                <td className="px-4 py-3 text-ink">{row.output_durasi !== undefined ? row.output_durasi : '-'}</td>
                 <td className="px-4 py-3">
-                  <span className={`px-2.5 py-1 rounded-[4px] text-xs font-semibold ${getCategoryColor(row.category)}`}>
-                    {row.category}
+                  <span className={`px-2.5 py-1 rounded-[4px] text-xs font-semibold ${getCategoryColor(row.category || getCategoryText(row.output_durasi))}`}>
+                    {row.category || getCategoryText(row.output_durasi)}
                   </span>
                 </td>
               </tr>
             ))}
+            {data.length === 0 && (
+              <tr>
+                <td colSpan="5" className="px-4 py-8 text-center text-slate">Tidak ada data keputusan fuzzy</td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
