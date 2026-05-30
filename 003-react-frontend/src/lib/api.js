@@ -8,16 +8,16 @@ const api = axios.create({
 
 export const getHistory = async (limit = 50, startDate = null, endDate = null) => {
   let url = `/history?limit=${limit}`;
-  if (startDate) url += `&startDate=${startDate}`;
-  if (endDate) url += `&endDate=${endDate}`;
+  if (startDate) url += `&startDate=${startDate}T00:00:00`;
+  if (endDate) url += `&endDate=${endDate}T23:59:59`;
   const response = await api.get(url);
   return response.data;
 };
 
 export const getFuzzyDecisions = async (limit = 50, startDate = null, endDate = null) => {
   let url = `/fuzzy?limit=${limit}`;
-  if (startDate) url += `&startDate=${startDate}`;
-  if (endDate) url += `&endDate=${endDate}`;
+  if (startDate) url += `&startDate=${startDate}T00:00:00`;
+  if (endDate) url += `&endDate=${endDate}T23:59:59`;
   const response = await api.get(url);
   return response.data;
 };
@@ -26,8 +26,8 @@ export const getKpiData = async (startDate = null, endDate = null) => {
   let url = '/kpi';
   if (startDate || endDate) {
     url += '?';
-    if (startDate) url += `startDate=${startDate}&`;
-    if (endDate) url += `endDate=${endDate}`;
+    if (startDate) url += `startDate=${startDate}T00:00:00&`;
+    if (endDate) url += `endDate=${endDate}T23:59:59`;
   }
   const response = await api.get(url);
   return response.data;
