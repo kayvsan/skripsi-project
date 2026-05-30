@@ -17,7 +17,7 @@ export default function StatCard({ title, value, unit, icon: Icon, color, trend 
         <div>
           <h3 className="text-slate text-[13px] uppercase tracking-wider font-semibold mb-2">{title}</h3>
           <div className="flex items-baseline gap-1">
-            <span className="text-4xl font-bold text-ink">{value}</span>
+            <span className="text-4xl font-bold text-ink">{Number(value).toFixed(1)}</span>
             <span className="text-lg text-slate">{unit}</span>
           </div>
         </div>
