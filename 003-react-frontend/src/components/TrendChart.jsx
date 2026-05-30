@@ -3,15 +3,14 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { LineChart as LineChartIcon } from 'lucide-react';
 
 export default function TrendChart({ data }) {
-  // Use CSS variables for chart colors to support dark/light mode
-  const axisColor = "var(--text-tertiary, #435270)";
-  const gridColor = "var(--border-default, #e4e4e7)";
+  const axisColor = "#94a3b8"; // steel
+  const gridColor = "#f4f4f5"; // hairline-soft
 
   return (
-    <div className="kpi-panel p-6">
+    <div className="card-base p-6">
       <div className="flex items-center gap-2 mb-6">
-        <LineChartIcon className="text-brand" size={20} />
-        <h2 className="text-lg font-semibold text-text-primary">Tren Real-time</h2>
+        <LineChartIcon className="text-slate" size={20} />
+        <h2 className="text-lg font-semibold text-ink">Tren Real-time</h2>
       </div>
       <div className="h-[400px] w-full">
         <ResponsiveContainer width="100%" height="100%">
@@ -33,11 +32,11 @@ export default function TrendChart({ data }) {
             />
             <Tooltip 
               contentStyle={{ 
-                backgroundColor: 'var(--surface-base, #ffffff)', 
-                borderColor: 'var(--border-default, #e4e4e7)',
-                color: 'var(--text-primary, #020817)',
-                borderRadius: '12px',
-                boxShadow: 'var(--shadow-custom)'
+                backgroundColor: '#ffffff', 
+                borderColor: '#e4e4e7',
+                color: '#111827',
+                borderRadius: '8px',
+                boxShadow: 'rgba(15, 15, 15, 0.08) 0px 4px 12px 0px'
               }}
             />
             <Legend wrapperStyle={{ paddingTop: '1.5rem' }} />
@@ -45,26 +44,26 @@ export default function TrendChart({ data }) {
               type="monotone" 
               name="Suhu (°C)"
               dataKey="suhu" 
-              stroke="#f59e0b" 
-              strokeWidth={3}
+              stroke="#f97316" 
+              strokeWidth={2}
               dot={false}
-              activeDot={{ r: 6, fill: '#f59e0b', stroke: '#fff', strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#f97316', stroke: '#fff', strokeWidth: 2 }}
             />
             <Line 
               type="monotone" 
               name="Kelembapan Udara (%)"
               dataKey="kelembapanUdara" 
-              stroke="#06b6d4" 
-              strokeWidth={3}
+              stroke="#14b8a6" 
+              strokeWidth={2}
               dot={false}
-              activeDot={{ r: 6, fill: '#06b6d4', stroke: '#fff', strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#14b8a6', stroke: '#fff', strokeWidth: 2 }}
             />
             <Line 
               type="monotone" 
               name="Kelembapan Tanah (%)"
               dataKey="kelembapanTanah" 
               stroke="#10b981" 
-              strokeWidth={3}
+              strokeWidth={2}
               dot={false}
               activeDot={{ r: 6, fill: '#10b981', stroke: '#fff', strokeWidth: 2 }}
             />

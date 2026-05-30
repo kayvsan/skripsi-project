@@ -6,24 +6,26 @@ import {
 } from 'recharts';
 import { Target, Activity, Droplets } from 'lucide-react';
 
-const COLORS = ['#94a3b8', '#10b981', '#06b6d4', '#4d0dd9'];
+const COLORS = ['#94a3b8', '#10b981', '#14b8a6', '#4d0dd9'];
 const BRAND_PURPLE = '#4d0dd9';
+const axisColor = "#94a3b8";
+const gridColor = "#f4f4f5";
 
 // Komponen KPI Card kecil yang reusable
-function KpiCard({ title, value, subValue, icon: Icon, colorClass = "text-brand", bgClass = "bg-brand/10" }) {
+function KpiCard({ title, value, subValue, icon: Icon, colorClass = "text-primary", bgClass = "bg-tint-lavender" }) {
   return (
-    <div className="kpi-panel p-6 flex flex-col justify-between">
+    <div className="card-base p-6 flex flex-col justify-between">
       <div className="flex justify-between items-start mb-4">
-        <h3 className="text-text-secondary font-rubik text-sm font-semibold uppercase tracking-wider">{title}</h3>
+        <h3 className="text-slate text-[13px] uppercase tracking-wider font-semibold">{title}</h3>
         <div className={`p-2 rounded-lg ${bgClass} ${colorClass}`}>
           <Icon size={20} />
         </div>
       </div>
       <div>
-        <div className="text-[48px] font-bold text-text-primary font-rubik leading-none mb-2">
+        <div className="text-[40px] font-bold text-ink leading-none mb-2 tracking-tight">
           {value}
         </div>
-        {subValue && <div className="text-text-secondary text-sm font-rubik">{subValue}</div>}
+        {subValue && <div className="text-slate text-sm">{subValue}</div>}
       </div>
     </div>
   );
@@ -49,7 +51,7 @@ export default function KpiPage({ startDate, endDate }) {
   }, [startDate, endDate]);
 
   if (loading) {
-    return <div className="flex justify-center items-center h-64 text-white">Loading KPI Data...</div>;
+    return <div className="flex justify-center items-center h-64 text-ink">Loading KPI Data...</div>;
   }
 
   if (!kpiData) return null;
@@ -74,24 +76,24 @@ export default function KpiPage({ startDate, endDate }) {
           value={`${kpiData.idealZonePercentage.toFixed(1)}%`}
           subValue="Persentase waktu kelembapan tanah optimal"
           icon={Target}
-          colorClass="text-accent-emerald"
-          bgClass="bg-accent-emerald/10"
+          colorClass="text-brand-green"
+          bgClass="bg-tint-mint"
         />
         <KpiCard 
           title="Total Frekuensi Siram" 
           value={`${totalIrrigationFreq}x`}
           subValue="Kali pompa menyala pada rentang tanggal"
           icon={Activity}
-          colorClass="text-accent-amber"
-          bgClass="bg-accent-amber/10"
+          colorClass="text-brand-orange"
+          bgClass="bg-tint-peach"
         />
         <KpiCard 
           title="Estimasi Total Air" 
-          value={`${(totalIrrigationDur / 100).toFixed(1)} L`} // Asumsi kasar: 100% durasi = 100 unit air, sesuaikan nanti
+          value={`${(totalIrrigationDur / 100).toFixed(1)} L`} 
           subValue={`Dari total ${totalIrrigationDur.toFixed(0)} durasi pompa`}
           icon={Droplets}
-          colorClass="text-accent-cyan"
-          bgClass="bg-accent-cyan/10"
+          colorClass="text-brand-teal"
+          bgClass="bg-tint-sky"
         />
       </div>
 
@@ -99,8 +101,10 @@ export default function KpiPage({ startDate, endDate }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
         {/* Distribusi Fuzzy */}
-        <div className="kpi-panel p-6">
-          <h3 className="text-text-secondary font-rubik text-sm font-semibold uppercase tracking-wider mb-6">Distribusi Keputusan Fuzzy Logic</h3>
+        <div className="card-base p-6">
+          <h3 className="text-slate text-[13px] uppercase tracking-wider font-semibold mb-6 flex items-center gap-2">
+            Distribusi Keputusan Fuzzy Logic
+          </h3>
           <div className="h-[300px]">
             {pieData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -122,47 +126,49 @@ export default function KpiPage({ startDate, endDate }) {
                   </Pie>
                   <Tooltip 
                     contentStyle={{ 
-                      backgroundColor: 'var(--surface-base, #ffffff)', 
-                      borderColor: 'var(--border-default, #e4e4e7)',
-                      color: 'var(--text-primary, #020817)',
-                      borderRadius: '12px',
-                      boxShadow: 'var(--shadow-custom)'
+                      backgroundColor: '#ffffff', 
+                      borderColor: '#e4e4e7',
+                      color: '#111827',
+                      borderRadius: '8px',
+                      boxShadow: 'rgba(15, 15, 15, 0.08) 0px 4px 12px 0px'
                     }}
                   />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex h-full items-center justify-center text-text-secondary">Tidak ada data fuzzy logic</div>
+              <div className="flex h-full items-center justify-center text-slate">Tidak ada data fuzzy logic</div>
             )}
           </div>
         </div>
 
         {/* Frekuensi Penyiraman Harian */}
-        <div className="kpi-panel p-6">
-          <h3 className="text-text-secondary font-rubik text-sm font-semibold uppercase tracking-wider mb-6">Penyiraman Harian</h3>
+        <div className="card-base p-6">
+          <h3 className="text-slate text-[13px] uppercase tracking-wider font-semibold mb-6 flex items-center gap-2">
+            Penyiraman Harian
+          </h3>
           <div className="h-[300px]">
             {kpiData.dailyIrrigation.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={kpiData.dailyIrrigation}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border-default)" vertical={false} />
-                  <XAxis dataKey="date" stroke="var(--text-tertiary)" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="var(--text-tertiary)" fontSize={12} tickLine={false} axisLine={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+                  <XAxis dataKey="date" stroke={axisColor} fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke={axisColor} fontSize={12} tickLine={false} axisLine={false} />
                   <Tooltip 
-                    cursor={{fill: 'var(--border-default)'}}
+                    cursor={{fill: '#f4f4f5'}}
                     contentStyle={{ 
-                      backgroundColor: 'var(--surface-base, #ffffff)', 
-                      borderColor: 'var(--border-default, #e4e4e7)',
-                      color: 'var(--text-primary, #020817)',
-                      borderRadius: '12px',
-                      boxShadow: 'var(--shadow-custom)'
+                      backgroundColor: '#ffffff', 
+                      borderColor: '#e4e4e7',
+                      color: '#111827',
+                      borderRadius: '8px',
+                      boxShadow: 'rgba(15, 15, 15, 0.08) 0px 4px 12px 0px'
                     }}
                   />
-                  <Bar dataKey="frequency" name="Frekuensi (kali)" fill="var(--brand)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="frequency" name="Frekuensi (kali)" fill={BRAND_PURPLE} radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             ) : (
-              <div className="flex h-full items-center justify-center text-text-secondary">Tidak ada log penyiraman</div>
+              <div className="flex h-full items-center justify-center text-slate">Tidak ada log penyiraman</div>
             )}
           </div>
         </div>
@@ -170,32 +176,34 @@ export default function KpiPage({ startDate, endDate }) {
       </div>
 
       {/* Bottom Chart: Rata-rata Harian */}
-      <div className="kpi-panel p-6">
-        <h3 className="text-text-secondary font-rubik text-sm font-semibold uppercase tracking-wider mb-6">Tren Rata-rata Lingkungan Harian</h3>
+      <div className="card-base p-6">
+        <h3 className="text-slate text-[13px] uppercase tracking-wider font-semibold mb-6 flex items-center gap-2">
+          Tren Rata-rata Lingkungan Harian
+        </h3>
         <div className="h-[400px]">
           {kpiData.dailyAverages.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={kpiData.dailyAverages}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border-default)" vertical={false} />
-                <XAxis dataKey="date" stroke="var(--text-tertiary)" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="var(--text-tertiary)" fontSize={12} tickLine={false} axisLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
+                <XAxis dataKey="date" stroke={axisColor} fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke={axisColor} fontSize={12} tickLine={false} axisLine={false} />
                 <Tooltip 
                   contentStyle={{ 
-                    backgroundColor: 'var(--surface-base, #ffffff)', 
-                    borderColor: 'var(--border-default, #e4e4e7)',
-                    color: 'var(--text-primary, #020817)',
-                    borderRadius: '12px',
-                    boxShadow: 'var(--shadow-custom)'
+                    backgroundColor: '#ffffff', 
+                    borderColor: '#e4e4e7',
+                    color: '#111827',
+                    borderRadius: '8px',
+                    boxShadow: 'rgba(15, 15, 15, 0.08) 0px 4px 12px 0px'
                   }}
                 />
-                <Legend />
-                <Line type="monotone" name="Suhu (°C)" dataKey="avg_suhu" stroke="#f59e0b" strokeWidth={3} dot={{r:4}} />
-                <Line type="monotone" name="Kelembapan Udara (%)" dataKey="avg_hum" stroke="#06b6d4" strokeWidth={3} dot={{r:4}} />
-                <Line type="monotone" name="Kelembapan Tanah (%)" dataKey="avg_soil" stroke="#10b981" strokeWidth={3} dot={{r:4}} />
+                <Legend wrapperStyle={{ paddingTop: '1.5rem' }} />
+                <Line type="monotone" name="Suhu (°C)" dataKey="avg_suhu" stroke="#f97316" strokeWidth={2} dot={{r:4}} />
+                <Line type="monotone" name="Kelembapan Udara (%)" dataKey="avg_hum" stroke="#14b8a6" strokeWidth={2} dot={{r:4}} />
+                <Line type="monotone" name="Kelembapan Tanah (%)" dataKey="avg_soil" stroke="#10b981" strokeWidth={2} dot={{r:4}} />
               </LineChart>
             </ResponsiveContainer>
           ) : (
-            <div className="flex h-full items-center justify-center text-[#435270]">Tidak ada data rata-rata harian</div>
+            <div className="flex h-full items-center justify-center text-slate">Tidak ada data rata-rata harian</div>
           )}
         </div>
       </div>

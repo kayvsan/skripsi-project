@@ -1,30 +1,21 @@
 import React from 'react';
+import { Activity, BarChart3 } from 'lucide-react';
 
 export default function TabNav({ activeTab, setActiveTab }) {
   return (
-    <div className="flex gap-2 mb-8 bg-surface p-1.5 rounded-[16px] w-fit border border-border-default">
+    <div className="flex gap-2 w-fit mb-8">
       <button
         onClick={() => setActiveTab('monitoring')}
-        className={`
-          px-6 py-2.5 rounded-[12px] font-rubik text-[16px] font-medium transition-all duration-150
-          ${activeTab === 'monitoring' 
-            ? 'bg-brand text-white shadow-[var(--shadow-custom)] translate-y-[-2px]' 
-            : 'bg-transparent text-text-secondary hover:text-text-primary'
-          }
-        `}
+        className={`flex items-center gap-2 ${activeTab === 'monitoring' ? 'pill-tab-active' : 'pill-tab'}`}
       >
-        Monitoring
+        <Activity size={16} />
+        Real-time Monitoring
       </button>
       <button
         onClick={() => setActiveTab('kpi')}
-        className={`
-          px-6 py-2.5 rounded-[12px] font-rubik text-[16px] font-medium transition-all duration-150
-          ${activeTab === 'kpi' 
-            ? 'bg-brand text-white shadow-[var(--shadow-custom)] translate-y-[-2px]' 
-            : 'bg-transparent text-text-secondary hover:text-text-primary'
-          }
-        `}
+        className={`flex items-center gap-2 ${activeTab === 'kpi' ? 'pill-tab-active' : 'pill-tab'}`}
       >
+        <BarChart3 size={16} />
         KPI Analytics
       </button>
     </div>

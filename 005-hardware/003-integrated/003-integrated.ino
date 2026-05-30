@@ -80,7 +80,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.println("PUMP ON triggered by Fuzzy Logic");
     pumpActive = true;
     pumpStartTime = millis();
-    pumpDuration = (unsigned long)(duration_percent / 100.0 * 300000.0);
+    pumpDuration = (unsigned long)(duration_percent / 100.0 * 120000.0);
     digitalWrite(RELAY_PIN, HIGH); // Nyalakan pompa
   }
 }

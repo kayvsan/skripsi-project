@@ -12,13 +12,13 @@ export default function StatCard({ title, value, unit, icon: Icon, color, trend 
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <div className="kpi-panel kpi-panel-hover p-6 flex flex-col justify-between gap-4">
+    <div className="card-base p-6 flex flex-col justify-between gap-4 group">
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="text-text-secondary text-base font-medium mb-2">{title}</h3>
+          <h3 className="text-slate text-[13px] uppercase tracking-wider font-semibold mb-2">{title}</h3>
           <div className="flex items-baseline gap-1">
-            <span className="text-4xl font-bold text-text-primary">{value}</span>
-            <span className="text-lg text-text-secondary">{unit}</span>
+            <span className="text-4xl font-bold text-ink">{value}</span>
+            <span className="text-lg text-slate">{unit}</span>
           </div>
         </div>
         
@@ -49,17 +49,17 @@ export default function StatCard({ title, value, unit, icon: Icon, color, trend 
             />
           </svg>
           <div className="absolute flex items-center justify-center" style={{ color: color }}>
-            <Icon size={24} className="animate-pulse" />
+            <Icon size={24} />
           </div>
         </div>
       </div>
       
       {trend !== undefined && (
         <div className="flex items-center gap-2 text-sm mt-2">
-          <span className={`font-semibold flex items-center ${trend >= 0 ? 'text-accent-emerald' : 'text-accent-amber'}`}>
+          <span className={`font-semibold flex items-center ${trend >= 0 ? 'text-brand-green' : 'text-brand-orange'}`}>
             {trend >= 0 ? '↑' : '↓'} {Math.abs(trend)}%
           </span>
-          <span className="text-text-secondary">vs periode sebelumnya</span>
+          <span className="text-stone text-xs">vs periode sebelumnya</span>
         </div>
       )}
     </div>
