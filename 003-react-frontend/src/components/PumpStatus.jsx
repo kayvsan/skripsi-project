@@ -2,31 +2,28 @@ import React from 'react';
 import { Power, Timer } from 'lucide-react';
 
 export default function PumpStatus({ status }) {
-  const isActive = status.pump === 'ON';
+  const isPumpOn = status.pump === 'ON';
 
   return (
-    <div className="glass-panel p-6 flex flex-col gap-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-slate-400 text-base font-medium">Status Pompa</h3>
-        <div className={`px-3 py-1 rounded-full text-xs font-bold ${isActive ? 'bg-accent-emerald/20 text-accent-emerald animate-pulse' : 'bg-slate-700/50 text-slate-400'}`}>
-          {isActive ? 'ACTIVE' : 'IDLE'}
-        </div>
+    <div className="kpi-panel kpi-panel-hover p-6 h-full flex flex-col justify-center items-center relative overflow-hidden">
+      <div className={`
+        relative z-10 w-24 h-24 rounded-full flex items-center justify-center mb-4 transition-colors duration-500
+        ${isPumpOn ? 'bg-accent-emerald shadow-[0_0_30px_rgba(16,185,129,0.5)]' : 'bg-surface border border-border-default'}
+      `}>
+        <Power 
+          size={40} 
+          className={`transition-colors duration-500 ${isPumpOn ? 'text-white' : 'text-text-secondary'}`} 
+        />
       </div>
 
-      <div className="flex items-center gap-6">
-        <div className={`p-4 rounded-2xl transition-all duration-500 ${isActive ? 'bg-accent-emerald text-white shadow-[0_0_20px_rgba(16,185,129,0.4)]' : 'bg-slate-800 text-slate-500'}`}>
-          <Power size={32} />
-        </div>
-        
-        <div className="flex flex-col">
-          <span className="text-3xl font-bold text-slate-50">
-            {isActive ? 'Pompa Menyala' : 'Pompa Mati'}
-          </span>
-          <div className="flex items-center gap-2 text-slate-400 mt-1">
-            <Timer size={16} />
-            <span className="text-sm">Durasi Terakhir: {status.duration_percent?.toFixed(1)}%</span>
-          </div>
-        </div>
+      <h3 className="text-text-secondary text-sm font-medium mb-1 z-10 uppercase tracking-widest">Status Pompa</h3>
+      <div className={`text-3xl font-bold z-10 ${isPumpOn ? 'text-accent-emerald' : 'text-text-primary'}`}>
+        {isPumpOn ? 'Pompa Menyala' : 'Pompa Mati'}
+      </div>
+
+      <div className="flex items-center gap-2 text-text-secondary mt-4 z-10">
+        <Timer size={16} />
+        <span className="text-sm">Durasi Terakhir: {status.duration_percent?.toFixed(1)}%</span>
       </div>
     </div>
   );

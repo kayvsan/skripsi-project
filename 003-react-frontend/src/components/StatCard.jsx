@@ -12,13 +12,13 @@ export default function StatCard({ title, value, unit, icon: Icon, color, trend 
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <div className="glass-panel glass-panel-hover p-6 flex flex-col justify-between gap-4">
+    <div className="kpi-panel kpi-panel-hover p-6 flex flex-col justify-between gap-4">
       <div className="flex justify-between items-start">
         <div>
-          <h3 className="text-slate-400 text-base font-medium mb-2">{title}</h3>
+          <h3 className="text-text-secondary text-base font-medium mb-2">{title}</h3>
           <div className="flex items-baseline gap-1">
-            <span className="text-4xl font-bold text-slate-50">{value}</span>
-            <span className="text-lg text-slate-400">{unit}</span>
+            <span className="text-4xl font-bold text-text-primary">{value}</span>
+            <span className="text-lg text-text-secondary">{unit}</span>
           </div>
         </div>
         
@@ -59,7 +59,7 @@ export default function StatCard({ title, value, unit, icon: Icon, color, trend 
           <span className={`font-semibold flex items-center ${trend >= 0 ? 'text-accent-emerald' : 'text-accent-amber'}`}>
             {trend >= 0 ? '↑' : '↓'} {Math.abs(trend)}%
           </span>
-          <span className="text-slate-400">vs periode sebelumnya</span>
+          <span className="text-text-secondary">vs periode sebelumnya</span>
         </div>
       )}
     </div>

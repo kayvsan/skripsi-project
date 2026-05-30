@@ -1,43 +1,41 @@
 import React from 'react';
+import { Activity } from 'lucide-react';
 
 export default function FuzzyTable({ data }) {
   return (
-    <div className="glass-panel p-6 overflow-hidden mt-6">
-      <h3 className="text-slate-50 text-xl font-semibold mb-6">
-        Log Keputusan Fuzzy Logic
-      </h3>
+    <div className="kpi-panel p-6 h-full flex flex-col mt-6">
+      <div className="flex items-center gap-2 mb-6">
+        <Activity className="text-brand" size={20} />
+        <h2 className="text-lg font-semibold text-text-primary">Riwayat Keputusan Fuzzy Logic</h2>
+      </div>
       <div className="overflow-x-auto max-h-[400px]">
-        <table className="w-full border-collapse text-left">
-          <thead className="sticky top-0 bg-slate-900/95 backdrop-blur-md z-10">
+        <table className="w-full text-left border-collapse">
+          <thead className="sticky top-0 bg-surface/90 backdrop-blur z-10 shadow-sm border-b border-border-default">
             <tr>
-              <th className="p-4 text-slate-400 font-medium border-bottom border-white/10">Waktu</th>
-              <th className="p-4 text-slate-400 font-medium border-bottom border-white/10">Input Suhu</th>
-              <th className="p-4 text-slate-400 font-medium border-bottom border-white/10">Input Kelembapan</th>
-              <th className="p-4 text-slate-400 font-medium border-bottom border-white/10">Input Tanah</th>
-              <th className="p-4 text-slate-400 font-medium border-bottom border-white/10">Output (Durasi Pompa)</th>
+              <th className="py-3 px-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Waktu</th>
+              <th className="py-3 px-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Suhu</th>
+              <th className="py-3 px-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Udara</th>
+              <th className="py-3 px-4 text-xs font-semibold text-text-secondary uppercase tracking-wider">Tanah</th>
+              <th className="py-3 px-4 text-xs font-semibold text-brand uppercase tracking-wider">Output Durasi</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-border-default/50">
             {data.length === 0 ? (
               <tr>
-                <td colSpan="5" className="p-4 text-center text-slate-500">Belum ada data keputusan fuzzy</td>
+                <td colSpan="5" className="py-8 text-center text-text-secondary">Belum ada data keputusan fuzzy</td>
               </tr>
             ) : (
-              data.map((row, index) => (
-                <tr 
-                  key={index} 
-                  className={`
-                    transition-colors duration-200 hover:bg-white/5
-                    ${index !== data.length - 1 ? 'border-b border-white/5' : ''}
-                  `}
-                >
-                  <td className="p-4 text-slate-50">{new Date(row.created_at).toLocaleString('id-ID')}</td>
-                  <td className="p-4 text-accent-amber font-medium">{row.suhu_val}°C</td>
-                  <td className="p-4 text-accent-cyan font-medium">{row.kelembapan_udara_val}%</td>
-                  <td className="p-4 text-accent-emerald font-medium">{row.kelembapan_tanah_val}%</td>
-                  <td className="p-4">
-                    <span className="px-3 py-1 bg-accent-emerald/20 text-accent-emerald rounded-full font-bold text-sm">
-                      {Number(row.output_durasi).toFixed(1)}%
+              data.map((item, i) => (
+                <tr key={i} className="hover:bg-text-secondary/5 transition-colors">
+                  <td className="py-3 px-4 text-sm font-medium text-text-primary whitespace-nowrap">
+                    {new Date(item.created_at).toLocaleString('id-ID')}
+                  </td>
+                  <td className="py-3 px-4 text-sm text-text-secondary">{item.suhu_val}°C</td>
+                  <td className="py-3 px-4 text-sm text-text-secondary">{item.kelembapan_udara_val}%</td>
+                  <td className="py-3 px-4 text-sm text-text-secondary">{item.kelembapan_tanah_val}%</td>
+                  <td className="py-3 px-4 text-sm text-text-primary">
+                    <span className="bg-brand/20 text-brand px-2 py-1 rounded-md border border-brand/30">
+                      {Number(item.output_durasi).toFixed(1)}%
                     </span>
                   </td>
                 </tr>

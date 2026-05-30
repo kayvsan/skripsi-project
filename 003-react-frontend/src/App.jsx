@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Thermometer, Droplets, Sprout, Activity, Download, RefreshCcw } from 'lucide-react';
 import StatCard from './components/StatCard';
 import TrendChart from './components/TrendChart';
-import HistoryTable from './components/HistoryTable';
 import FuzzyTable from './components/FuzzyTable';
 import TabNav from './components/TabNav';
 import KpiPage from './components/KpiPage';
+import ThemeToggle from './components/ThemeToggle';
 import PumpStatus from './components/PumpStatus';
 import IrrigationLogs from './components/IrrigationLogs';
 import { useMqtt } from './lib/mqtt';
@@ -106,13 +106,13 @@ function App() {
       <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
         <div>
           <div className="flex items-center gap-4 mb-2">
-            <Activity className="text-accent-emerald animate-glow" size={40} />
-            <h1 className="text-4xl font-bold bg-gradient-to-br from-slate-50 to-slate-400 bg-clip-text text-transparent">
+            <Activity className="text-brand animate-glow" size={40} />
+            <h1 className="text-4xl font-bold text-text-primary">
               ChiliSmart Dashboard
             </h1>
           </div>
           <div className="flex items-center gap-3">
-            <p className="text-slate-400 text-lg">Monitoring Kelembapan & Suhu Real-time</p>
+            <p className="text-text-secondary text-lg">Monitoring Kelembapan & Suhu Real-time</p>
             <div className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-bold ${isConnected ? 'bg-accent-emerald/10 text-accent-emerald' : 'bg-red-500/10 text-red-500'}`}>
               <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-accent-emerald animate-pulse' : 'bg-red-500'}`} />
               {isConnected ? 'MQTT CONNECTED' : 'MQTT DISCONNECTED'}
@@ -121,31 +121,33 @@ function App() {
         </div>
 
         <div className="flex flex-col sm:flex-row items-end sm:items-center gap-3">
-          <div className="flex items-center gap-2 bg-slate-800/50 p-1.5 rounded-xl border border-white/5">
+          <ThemeToggle />
+          
+          <div className="flex items-center gap-2 bg-surface p-1.5 rounded-[12px] border border-border-default shadow-[var(--shadow-custom)]">
             <input 
               type="date" 
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="bg-slate-900/50 text-slate-300 text-sm px-3 py-1.5 rounded-lg border border-white/10 focus:outline-none focus:border-accent-emerald"
+              className="bg-bg-base text-text-primary text-sm px-3 py-1.5 rounded-lg border border-border-default focus:outline-none focus:border-brand"
             />
-            <span className="text-slate-500">to</span>
+            <span className="text-text-secondary">to</span>
             <input 
               type="date" 
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="bg-slate-900/50 text-slate-300 text-sm px-3 py-1.5 rounded-lg border border-white/10 focus:outline-none focus:border-accent-emerald"
+              className="bg-bg-base text-text-primary text-sm px-3 py-1.5 rounded-lg border border-border-default focus:outline-none focus:border-brand"
             />
           </div>
           <button 
             onClick={fetchData}
-            className="flex items-center justify-center gap-2 px-4 py-2 h-[38px] rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors text-sm font-medium border border-white/5"
+            className="flex items-center justify-center gap-2 px-4 py-2 h-[38px] rounded-[12px] bg-surface hover:-translate-y-[2px] text-text-primary transition-all duration-150 text-sm font-medium border border-border-default shadow-[var(--shadow-custom)]"
           >
             <RefreshCcw size={16} className={loading ? 'animate-spin' : ''} />
             Refresh
           </button>
           <a 
             href={downloadHistoryUrl}
-            className="flex items-center justify-center gap-2 px-4 py-2 h-[38px] rounded-xl bg-accent-emerald hover:bg-emerald-600 text-white transition-colors text-sm font-medium shadow-lg shadow-emerald-900/20"
+            className="flex items-center justify-center gap-2 px-4 py-2 h-[38px] rounded-[12px] bg-brand hover:-translate-y-[2px] text-white transition-all duration-150 text-sm font-medium shadow-[var(--shadow-custom)]"
           >
             <Download size={16} />
             Export
@@ -161,28 +163,28 @@ function App() {
         {/* Stats Summary Section */}
         {stats && (
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="glass-panel p-4 flex items-center justify-between border-l-4 border-l-accent-emerald">
+            <div className="kpi-panel p-4 flex items-center justify-between border-l-4 border-l-accent-emerald">
               <div>
-                <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Rata-rata Suhu Hari Ini</p>
-                <p className="text-xl font-bold text-slate-50">{Number(stats.averageToday?.avg_suhu || 0).toFixed(1)}°C</p>
+                <p className="text-xs text-text-secondary font-medium uppercase tracking-wider mb-1">Rata-rata Suhu Hari Ini</p>
+                <p className="text-xl font-bold text-text-primary">{Number(stats.averageToday?.avg_suhu || 0).toFixed(1)}°C</p>
               </div>
             </div>
-            <div className="glass-panel p-4 flex items-center justify-between border-l-4 border-l-accent-cyan">
+            <div className="kpi-panel p-4 flex items-center justify-between border-l-4 border-l-accent-cyan">
               <div>
-                <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Rata-rata Kelembapan</p>
-                <p className="text-xl font-bold text-slate-50">{Number(stats.averageToday?.avg_hum || 0).toFixed(1)}%</p>
+                <p className="text-xs text-text-secondary font-medium uppercase tracking-wider mb-1">Rata-rata Kelembapan</p>
+                <p className="text-xl font-bold text-text-primary">{Number(stats.averageToday?.avg_hum || 0).toFixed(1)}%</p>
               </div>
             </div>
-            <div className="glass-panel p-4 flex items-center justify-between border-l-4 border-l-accent-emerald">
+            <div className="kpi-panel p-4 flex items-center justify-between border-l-4 border-l-accent-emerald">
               <div>
-                <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Rata-rata Tanah Basah</p>
-                <p className="text-xl font-bold text-slate-50">{Number(stats.averageToday?.avg_soil || 0).toFixed(1)}%</p>
+                <p className="text-xs text-text-secondary font-medium uppercase tracking-wider mb-1">Rata-rata Tanah Basah</p>
+                <p className="text-xl font-bold text-text-primary">{Number(stats.averageToday?.avg_soil || 0).toFixed(1)}%</p>
               </div>
             </div>
-            <div className="glass-panel p-4 flex items-center justify-between border-l-4 border-l-accent-amber">
+            <div className="kpi-panel p-4 flex items-center justify-between border-l-4 border-l-accent-amber">
               <div>
-                <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mb-1">Total Penyiraman Hari Ini</p>
-                <p className="text-xl font-bold text-slate-50">{stats.totalIrrigationToday || 0} kali</p>
+                <p className="text-xs text-text-secondary font-medium uppercase tracking-wider mb-1">Total Penyiraman Hari Ini</p>
+                <p className="text-xl font-bold text-text-primary">{stats.totalIrrigationToday || 0} kali</p>
               </div>
             </div>
           </div>

@@ -1,48 +1,66 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-dark: #0f172a;
-  --color-card: rgba(30, 41, 59, 0.4);
-  --color-card-hover: rgba(30, 41, 59, 0.6);
-  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-bg-base: var(--bg-base);
+  --color-surface: var(--surface-base);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-tertiary: var(--text-tertiary);
+  --color-brand: var(--brand);
+  --color-border-default: var(--border-default);
   
+  /* Semantic Accent Colors for Charts (kept from old theme) */
   --color-accent-cyan: #06b6d4;
   --color-accent-emerald: #10b981;
   --color-accent-amber: #f59e0b;
   
-  /* Brand Tokens from DESIGN.md */
-  --color-brand-purple: #4d0dd9;
-  --color-brand-purple-light: #7b42f5;
-  --color-text-inverse: #435270;
-  
-  --font-outfit: "Outfit", sans-serif;
-  --font-rubik: "Rubik", sans-serif;
+  --font-rubik: "Rubik", "Rubik Fallback", sans-serif;
+  --radius-xs: 12px;
 }
 
 @layer base {
-  @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Rubik:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap');
+
+  :root {
+    --bg-base: #f8fafc;
+    --surface-base: #ffffff;
+    --text-primary: #020817;
+    --text-secondary: #4d0dd9;
+    --text-tertiary: #435270;
+    --brand: #4d0dd9;
+    --border-default: #e4e4e7;
+    --shadow-custom: 0px 4px 0px 0px rgb(77, 13, 217);
+  }
+
+  .dark {
+    --bg-base: #000000;
+    --surface-base: #0f172a;
+    --text-primary: #ffffff;
+    --text-secondary: #7b42f5;
+    --text-tertiary: #94a3b8;
+    --brand: #7b42f5;
+    --border-default: rgba(255, 255, 255, 0.1);
+    --shadow-custom: 0px 4px 0px 0px rgb(123, 66, 245);
+  }
 
   body {
-    @apply bg-bg-dark text-slate-50 font-outfit min-h-screen antialiased;
+    @apply bg-bg-base text-text-primary font-rubik min-h-screen antialiased transition-colors duration-300;
     background-image: 
-      radial-gradient(circle at 15% 50%, rgba(6, 182, 212, 0.08), transparent 25%),
-      radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.08), transparent 25%);
+      radial-gradient(circle at 15% 50%, rgba(6, 182, 212, 0.05), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.05), transparent 25%);
     background-attachment: fixed;
   }
 }
 
-@utility glass-panel {
-  @apply bg-card backdrop-blur-xl border border-border-subtle rounded-3xl shadow-2xl transition-all duration-300;
-}
-
-/* KPI Panel based on DESIGN.md */
+/* Glass/Card Panel based on DESIGN.md */
 @utility kpi-panel {
-  @apply bg-black backdrop-blur-xl border border-[#e4e4e7]/20 rounded-[12px] transition-all duration-300;
-  box-shadow: rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgba(0, 0, 0, 0) 0px 0px 0px 0px, rgb(77, 13, 217) 0px 4px 0px 0px;
+  @apply bg-surface border border-border-default transition-all duration-300;
+  border-radius: var(--radius-xs);
+  box-shadow: var(--shadow-custom);
 }
 
-@utility glass-panel-hover {
-  @apply hover:bg-card-hover hover:border-white/15 hover:-translate-y-0.5;
+@utility kpi-panel-hover {
+  @apply hover:-translate-y-1;
 }
 
 @utility animate-glow {
@@ -64,9 +82,9 @@
 }
 
 ::-webkit-scrollbar-track {
-  @apply bg-slate-900/50 rounded;
+  @apply bg-surface rounded;
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-700/30 rounded hover:bg-slate-700/50;
+  @apply bg-border-default rounded;
 }
