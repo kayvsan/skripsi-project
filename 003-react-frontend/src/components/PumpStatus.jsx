@@ -2,7 +2,7 @@ import React from 'react';
 import { Power, Timer } from 'lucide-react';
 
 export default function PumpStatus({ status }) {
-  const isOn = status === 'ON';
+  const isOn = status?.pump === 'ON';
   
   return (
     <div className="card-base p-6 h-full flex flex-col justify-center gap-6">
