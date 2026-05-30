@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrainCircuit } from 'lucide-react';
+import { BrainCircuit, Droplets } from 'lucide-react';
 
 export default function FuzzyTable({ data }) {
   const getCategoryColor = (category) => {
@@ -14,9 +14,9 @@ export default function FuzzyTable({ data }) {
 
   const getCategoryText = (durasi) => {
     const d = Number(durasi);
-    if (!d || d === 0) return 'TIDAK PERLU';
-    if (d <= 3) return 'SEDIKIT';
-    if (d <= 7) return 'SEDANG';
+    if (!d || d <= 20) return 'TIDAK PERLU';
+    if (d <= 45) return 'SEDIKIT';
+    if (d <= 70) return 'SEDANG';
     return 'BANYAK';
   };
 
@@ -43,7 +43,14 @@ export default function FuzzyTable({ data }) {
                 <td className="px-4 py-3 text-ink font-medium">{new Date(row.created_at).toLocaleTimeString('id-ID')}</td>
                 <td className="px-4 py-3 text-ink">{row.suhu_val !== undefined ? row.suhu_val : '-'}°C</td>
                 <td className="px-4 py-3 text-ink">{row.kelembapan_tanah_val !== undefined ? row.kelembapan_tanah_val : '-'}%</td>
-                <td className="px-4 py-3 text-ink">{row.output_durasi !== undefined ? row.output_durasi : '-'}</td>
+                <td className="px-4 py-3 text-ink">
+                  {row.output_durasi !== undefined ? (
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-semibold">{row.output_durasi} detik</span>
+                      {Number(row.output_durasi) > 0 && <Droplets size={14} className="text-brand-teal" />}
+                    </div>
+                  ) : '-'}
+                </td>
                 <td className="px-4 py-3">
                   <span className={`px-2.5 py-1 rounded-[4px] text-xs font-semibold ${getCategoryColor(row.category || getCategoryText(row.output_durasi))}`}>
                     {row.category || getCategoryText(row.output_durasi)}
