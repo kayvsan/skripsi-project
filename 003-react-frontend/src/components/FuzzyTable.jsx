@@ -46,7 +46,7 @@ export default function FuzzyTable({ data }) {
                 <td className="px-4 py-3 text-ink">
                   {row.output_durasi !== undefined ? (
                     <div className="flex items-center gap-1.5">
-                      <span className="font-semibold">{Number(row.output_durasi).toFixed(1)} detik</span>
+                      <span className="font-semibold">{((Number(row.output_durasi) / 100) * 120).toFixed(1)} detik</span>
                       {Number(row.output_durasi) > 0 && <Droplets size={14} className="text-brand-teal" />}
                     </div>
                   ) : '-'}

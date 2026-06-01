@@ -16,7 +16,7 @@ export default function IrrigationLogs({ logs }) {
               <p className="text-xs text-slate">{new Date(log.created_at).toLocaleDateString('id-ID')}</p>
             </div>
             <div className="text-right">
-              <p className="text-sm font-bold text-primary">{log.duration} dtk</p>
+              <p className="text-sm font-bold text-primary">{((Number(log.durasi) / 100) * 120).toFixed(1)} dtk</p>
               <p className="text-xs text-slate">Air dialirkan</p>
             </div>
           </div>
