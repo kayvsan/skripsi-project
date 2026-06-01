@@ -171,19 +171,19 @@ function App() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="card-base p-5 flex items-center justify-between border-l-4 border-l-brand-teal">
                 <div>
-                  <p className="text-[13px] text-slate font-semibold uppercase tracking-wider mb-1">Suhu Hari Ini</p>
+                  <p className="text-[13px] text-slate font-semibold uppercase tracking-wider mb-1">Rata-Rata Suhu Hari Ini</p>
                   <p className="text-xl font-bold text-ink">{Number(stats.averageToday?.avg_suhu || 0).toFixed(1)}°C</p>
                 </div>
               </div>
               <div className="card-base p-5 flex items-center justify-between border-l-4 border-l-brand-orange">
                 <div>
-                  <p className="text-[13px] text-slate font-semibold uppercase tracking-wider mb-1">Kelembapan Udara</p>
+                  <p className="text-[13px] text-slate font-semibold uppercase tracking-wider mb-1">Rata-Rata Kelembapan Udara</p>
                   <p className="text-xl font-bold text-ink">{Number(stats.averageToday?.avg_hum || 0).toFixed(1)}%</p>
                 </div>
               </div>
               <div className="card-base p-5 flex items-center justify-between border-l-4 border-l-brand-green">
                 <div>
-                  <p className="text-[13px] text-slate font-semibold uppercase tracking-wider mb-1">Kelembapan Tanah</p>
+                  <p className="text-[13px] text-slate font-semibold uppercase tracking-wider mb-1">Rata-Rata Kelembapan Tanah</p>
                   <p className="text-xl font-bold text-ink">{Number(stats.averageToday?.avg_soil || 0).toFixed(1)}%</p>
                 </div>
               </div>
@@ -199,7 +199,7 @@ function App() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
             <StatCard 
-              title="Suhu Udara" 
+              title="Suhu Udara (Live)" 
               value={currentData.suhu} 
               unit="°C" 
               icon={Thermometer} 
@@ -207,7 +207,7 @@ function App() {
               trend={getTrend(currentData.suhu, prevData.suhu)}
             />
             <StatCard 
-              title="Kelembapan Udara" 
+              title="Kelembapan Udara (Live)" 
               value={currentData.kelembapanUdara} 
               unit="%" 
               icon={Droplets} 
@@ -215,7 +215,7 @@ function App() {
               trend={getTrend(currentData.kelembapanUdara, prevData.kelembapanUdara)}
             />
             <StatCard 
-              title="Kelembapan Tanah" 
+              title="Kelembapan Tanah (Live)" 
               value={currentData.kelembapanTanah} 
               unit="%" 
               icon={Sprout} 
