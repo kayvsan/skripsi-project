@@ -11,13 +11,13 @@ export default function TabNav({ activeTab, setActiveTab }) {
         <Activity size={16} />
         Real-time Monitoring
       </button>
-      <button
+      {/* <button
         onClick={() => setActiveTab('kpi')}
         className={`flex items-center gap-2 ${activeTab === 'kpi' ? 'pill-tab-active' : 'pill-tab'}`}
       >
         <BarChart3 size={16} />
         KPI Analytics
-      </button>
+      </button> */}
     </div>
   );
 }
