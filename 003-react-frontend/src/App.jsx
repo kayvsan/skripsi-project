@@ -199,7 +199,7 @@ function App() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
             <StatCard 
-              title="Suhu Udara (Live)" 
+              title="Suhu" 
               value={currentData.suhu} 
               unit="°C" 
               icon={Thermometer} 
@@ -207,7 +207,7 @@ function App() {
               trend={getTrend(currentData.suhu, prevData.suhu)}
             />
             <StatCard 
-              title="Kelembapan Udara (Live)" 
+              title="Kelembapan Udara" 
               value={currentData.kelembapanUdara} 
               unit="%" 
               icon={Droplets} 
@@ -215,7 +215,7 @@ function App() {
               trend={getTrend(currentData.kelembapanUdara, prevData.kelembapanUdara)}
             />
             <StatCard 
-              title="Kelembapan Tanah (Live)" 
+              title="Kelembapan Tanah" 
               value={currentData.kelembapanTanah} 
               unit="%" 
               icon={Sprout} 
