@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import mqtt from 'mqtt';
 
-const MQTT_URL = import.meta.env.VITE_MQTT_URL || `ws://${window.location.hostname}:9001`; // Websocket port of Mosquitto
+const MQTT_URL = import.meta.env.VITE_MQTT_URL || `wss://${window.location.hostname}/mqtt`;
 
 export const useMqtt = () => {
   const [client, setClient] = useState(null);
