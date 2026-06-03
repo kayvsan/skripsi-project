@@ -121,36 +121,38 @@ function App() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 bg-surface p-1 rounded-md border border-hairline">
+          <div className="flex items-center flex-wrap gap-2 w-full sm:w-auto mt-1 sm:mt-0">
+            <div className="flex items-center flex-1 sm:flex-none justify-between gap-1 sm:gap-2 bg-surface p-1 rounded-md border border-hairline min-w-[220px]">
               <input 
                 type="date" 
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="bg-transparent text-ink text-sm px-2 py-1 focus:outline-none"
+                className="bg-transparent text-ink text-[11px] sm:text-sm px-1 sm:px-2 py-1 focus:outline-none w-full"
               />
-              <span className="text-slate text-sm">to</span>
+              <span className="text-slate text-xs sm:text-sm">-</span>
               <input 
                 type="date" 
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="bg-transparent text-ink text-sm px-2 py-1 focus:outline-none"
+                className="bg-transparent text-ink text-[11px] sm:text-sm px-1 sm:px-2 py-1 focus:outline-none w-full"
               />
             </div>
-            <button 
-              onClick={fetchData}
-              className="text-ink border border-hairline-strong font-medium inline-flex items-center justify-center transition-colors duration-150 hover:bg-surface rounded-md px-3 py-[7px] gap-2 text-sm"
-            >
-              <RefreshCcw size={14} className={loading ? 'animate-spin' : ''} />
-              <span className="hidden sm:inline">Refresh</span>
-            </button>
-            <a 
-              href={downloadHistoryUrl}
-              className="button-primary text-sm py-[7px] px-3 gap-2"
-            >
-              <Download size={14} />
-              <span className="hidden sm:inline">Export</span>
-            </a>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={fetchData}
+                className="text-ink border border-hairline-strong font-medium inline-flex items-center justify-center transition-colors duration-150 hover:bg-surface rounded-md px-3 py-[7px] gap-2 text-sm shrink-0"
+              >
+                <RefreshCcw size={14} className={loading ? 'animate-spin' : ''} />
+                <span className="hidden sm:inline">Refresh</span>
+              </button>
+              <a 
+                href={downloadHistoryUrl}
+                className="button-primary text-sm py-[7px] px-3 gap-2 shrink-0"
+              >
+                <Download size={14} />
+                <span className="hidden sm:inline">Export</span>
+              </a>
+            </div>
           </div>
         </div>
       </header>
