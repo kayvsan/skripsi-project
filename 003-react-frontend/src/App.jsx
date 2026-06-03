@@ -105,7 +105,7 @@ function App() {
     <div className="min-h-screen bg-surface-soft">
       {/* Clean Top Header (Notion App Style) */}
       <header className="bg-canvas border-b border-hairline sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-0 sm:h-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <div className="p-1.5 bg-brand-green/10 rounded-md">
@@ -142,14 +142,14 @@ function App() {
               className="text-ink border border-hairline-strong font-medium inline-flex items-center justify-center transition-colors duration-150 hover:bg-surface rounded-md px-3 py-[7px] gap-2 text-sm"
             >
               <RefreshCcw size={14} className={loading ? 'animate-spin' : ''} />
-              Refresh
+              <span className="hidden sm:inline">Refresh</span>
             </button>
             <a 
               href={downloadHistoryUrl}
               className="button-primary text-sm py-[7px] px-3 gap-2"
             >
               <Download size={14} />
-              Export
+              <span className="hidden sm:inline">Export</span>
             </a>
           </div>
         </div>

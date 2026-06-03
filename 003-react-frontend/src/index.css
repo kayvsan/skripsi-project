@@ -61,6 +61,12 @@
   border-radius: var(--radius-lg);
 }
 
+@media (max-width: 640px) {
+  .card-base {
+    padding: 1rem !important;
+  }
+}
+
 @utility card-feature {
   @apply bg-canvas border border-hairline transition-colors duration-150 p-8;
   border-radius: var(--radius-lg);

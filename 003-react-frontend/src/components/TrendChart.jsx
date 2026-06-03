@@ -12,9 +12,9 @@ export default function TrendChart({ data }) {
         <LineChartIcon className="text-slate" size={20} />
         <h2 className="text-lg font-semibold text-ink">Tren Real-time</h2>
       </div>
-      <div className="h-[400px] w-full">
+      <div className="h-[250px] sm:h-[400px] w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+          <LineChart data={data} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
             <XAxis 
               dataKey="time" 

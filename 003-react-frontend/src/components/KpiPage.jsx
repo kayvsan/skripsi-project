@@ -22,7 +22,7 @@ function KpiCard({ title, value, subValue, icon: Icon, colorClass = "text-primar
         </div>
       </div>
       <div>
-        <div className="text-[40px] font-bold text-ink leading-none mb-2 tracking-tight">
+        <div className="text-[28px] sm:text-[40px] font-bold text-ink leading-none mb-2 tracking-tight">
           {value}
         </div>
         {subValue && <div className="text-slate text-sm">{subValue}</div>}
@@ -105,7 +105,7 @@ export default function KpiPage({ startDate, endDate }) {
           <h3 className="text-slate text-[13px] uppercase tracking-wider font-semibold mb-6 flex items-center gap-2">
             Distribusi Keputusan Fuzzy Logic
           </h3>
-          <div className="h-[300px]">
+          <div className="h-[220px] sm:h-[300px]">
             {pieData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -147,7 +147,7 @@ export default function KpiPage({ startDate, endDate }) {
           <h3 className="text-slate text-[13px] uppercase tracking-wider font-semibold mb-6 flex items-center gap-2">
             Penyiraman Harian
           </h3>
-          <div className="h-[300px]">
+          <div className="h-[220px] sm:h-[300px]">
             {kpiData.dailyIrrigation.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={kpiData.dailyIrrigation}>
@@ -180,7 +180,7 @@ export default function KpiPage({ startDate, endDate }) {
         <h3 className="text-slate text-[13px] uppercase tracking-wider font-semibold mb-6 flex items-center gap-2">
           Tren Rata-rata Lingkungan Harian
         </h3>
-        <div className="h-[400px]">
+        <div className="h-[250px] sm:h-[400px]">
           {kpiData.dailyAverages.length > 0 ? (
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={kpiData.dailyAverages}>
