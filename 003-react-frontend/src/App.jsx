@@ -43,7 +43,7 @@ function App() {
       setLoading(true);
       const [history, logs, currentStats, fuzzy] = await Promise.all([
         getHistory(historyPage, 10, startDate, endDate),
-        getIrrigationLogs(irrigationPage, 5),
+        getIrrigationLogs(irrigationPage, 10),
         getStats(),
         getFuzzyDecisions(fuzzyPage, 10, startDate, endDate)
       ]);
