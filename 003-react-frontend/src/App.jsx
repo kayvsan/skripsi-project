@@ -19,6 +19,14 @@ function App() {
   const [fuzzyDecisions, setFuzzyDecisions] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // Pagination states
+  const [historyPage, setHistoryPage] = useState(1);
+  const [fuzzyPage, setFuzzyPage] = useState(1);
+  const [irrigationPage, setIrrigationPage] = useState(1);
+  const [historyTotalPages, setHistoryTotalPages] = useState(1);
+  const [fuzzyTotalPages, setFuzzyTotalPages] = useState(1);
+  const [irrigationTotalPages, setIrrigationTotalPages] = useState(1);
   const [startDate, setStartDate] = useState(() => {
     const d = new Date();
     d.setHours(0, 0, 0, 0);
@@ -34,24 +42,30 @@ function App() {
     try {
       setLoading(true);
       const [history, logs, currentStats, fuzzy] = await Promise.all([
-        getHistory(50, startDate, endDate),
-        getIrrigationLogs(20),
+        getHistory(historyPage, 10, startDate, endDate),
+        getIrrigationLogs(irrigationPage, 5),
         getStats(),
-        getFuzzyDecisions(50, startDate, endDate)
+        getFuzzyDecisions(fuzzyPage, 10, startDate, endDate)
       ]);
       
       // Transform DB data to match chart format
-      const formattedHistory = history.map(item => ({
+      const formattedHistory = history.data.map(item => ({
         time: new Date(item.created_at).toLocaleTimeString('id-ID', { hour12: false }),
         suhu: item.suhu,
         kelembapanUdara: item.kelembapan_udara,
         kelembapanTanah: item.kelembapan_tanah
-      })).reverse();
+      })).reverse(); // Reverse if needed for chart, though backend already sorts DESC.
 
       setHistoryData(formattedHistory);
-      setIrrigationLogs(logs);
+      setHistoryTotalPages(history.totalPages);
+      
+      setIrrigationLogs(logs.data);
+      setIrrigationTotalPages(logs.totalPages);
+      
       setStats(currentStats);
-      setFuzzyDecisions(fuzzy);
+      
+      setFuzzyDecisions(fuzzy.data);
+      setFuzzyTotalPages(fuzzy.totalPages);
     } catch (err) {
       console.error('Error fetching data:', err);
     } finally {
@@ -63,6 +77,13 @@ function App() {
     fetchData();
     const interval = setInterval(fetchData, 30000); // Refresh every 30s
     return () => clearInterval(interval);
+  }, [startDate, endDate, historyPage, fuzzyPage, irrigationPage]);
+
+  // Reset pagination when date filter changes
+  useEffect(() => {
+    setHistoryPage(1);
+    setFuzzyPage(1);
+    setIrrigationPage(1);
   }, [startDate, endDate]);
 
   // Update real-time chart when new MQTT data arrives
@@ -238,11 +259,26 @@ function App() {
         {/* Bottom Section: History Table & Logs */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <HistoryTable data={historyData} />
-            <FuzzyTable data={fuzzyDecisions} />
+            <HistoryTable 
+              data={historyData} 
+              page={historyPage} 
+              totalPages={historyTotalPages} 
+              onPageChange={setHistoryPage} 
+            />
+            <FuzzyTable 
+              data={fuzzyDecisions} 
+              page={fuzzyPage} 
+              totalPages={fuzzyTotalPages} 
+              onPageChange={setFuzzyPage} 
+            />
           </div>
           <div className="lg:col-span-1">
-            <IrrigationLogs logs={irrigationLogs} />
+            <IrrigationLogs 
+              logs={irrigationLogs} 
+              page={irrigationPage}
+              totalPages={irrigationTotalPages}
+              onPageChange={setIrrigationPage}
+            />
           </div>
         </div>
       </main>

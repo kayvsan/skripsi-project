@@ -6,16 +6,18 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
-export const getHistory = async (limit = 50, startDate = null, endDate = null) => {
-  let url = `/history?limit=${limit}`;
+export const getHistory = async (page = 1, limit = 10, startDate = null, endDate = null) => {
+  const offset = (page - 1) * limit;
+  let url = `/history?limit=${limit}&offset=${offset}`;
   if (startDate) url += `&startDate=${startDate}T00:00:00`;
   if (endDate) url += `&endDate=${endDate}T23:59:59`;
   const response = await api.get(url);
   return response.data;
 };
 
-export const getFuzzyDecisions = async (limit = 50, startDate = null, endDate = null) => {
-  let url = `/fuzzy?limit=${limit}`;
+export const getFuzzyDecisions = async (page = 1, limit = 10, startDate = null, endDate = null) => {
+  const offset = (page - 1) * limit;
+  let url = `/fuzzy?limit=${limit}&offset=${offset}`;
   if (startDate) url += `&startDate=${startDate}T00:00:00`;
   if (endDate) url += `&endDate=${endDate}T23:59:59`;
   const response = await api.get(url);
@@ -33,8 +35,10 @@ export const getKpiData = async (startDate = null, endDate = null) => {
   return response.data;
 };
 
-export const getIrrigationLogs = async (limit = 20) => {
-  const response = await api.get('/irrigation-logs');
+export const getIrrigationLogs = async (page = 1, limit = 5) => {
+  const offset = (page - 1) * limit;
+  let url = `/irrigation-logs?limit=${limit}&offset=${offset}`;
+  const response = await api.get(url);
   return response.data;
 };
 

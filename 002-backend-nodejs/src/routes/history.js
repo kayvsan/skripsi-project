@@ -8,27 +8,40 @@ router.get('/', async (req, res) => {
   try {
     const { limit = 50, offset = 0, startDate, endDate } = req.query;
     
-    let query = 'SELECT * FROM sensor_data WHERE 1=1';
+    let baseQuery = 'FROM sensor_data WHERE 1=1';
     const params = [];
 
     if (startDate) {
       params.push(startDate);
-      query += ` AND created_at >= $${params.length}`;
+      baseQuery += ` AND created_at >= $${params.length}`;
     }
 
     if (endDate) {
       params.push(endDate);
-      query += ` AND created_at <= $${params.length}`;
+      baseQuery += ` AND created_at <= $${params.length}`;
     }
 
+    // Get Total Count
+    const countResult = await db.query(`SELECT COUNT(*) ${baseQuery}`, params);
+    const total = parseInt(countResult.rows[0].count);
+
+    // Get Data
+    let dataQuery = `SELECT * ${baseQuery} ORDER BY created_at DESC`;
+    
     params.push(limit);
-    query += ` ORDER BY created_at DESC LIMIT $${params.length}`;
+    dataQuery += ` LIMIT $${params.length}`;
     
     params.push(offset);
-    query += ` OFFSET $${params.length}`;
+    dataQuery += ` OFFSET $${params.length}`;
 
-    const result = await db.query(query, params);
-    res.json(result.rows);
+    const result = await db.query(dataQuery, params);
+    
+    res.json({
+      data: result.rows,
+      total: total,
+      page: Math.floor(offset / limit) + 1,
+      totalPages: Math.ceil(total / limit) || 1
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal Server Error' });

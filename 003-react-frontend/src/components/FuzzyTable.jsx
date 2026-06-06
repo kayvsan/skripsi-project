@@ -1,7 +1,7 @@
 import React from 'react';
-import { BrainCircuit, Droplets } from 'lucide-react';
+import { BrainCircuit, Droplets, ChevronLeft, ChevronRight } from 'lucide-react';
 
-export default function FuzzyTable({ data }) {
+export default function FuzzyTable({ data, page, totalPages, onPageChange }) {
   const getCategoryColor = (category) => {
     switch(category) {
       case 'TIDAK PERLU': return 'bg-tint-gray text-charcoal';
@@ -38,7 +38,7 @@ export default function FuzzyTable({ data }) {
             </tr>
           </thead>
           <tbody>
-            {data.slice(0, 10).map((row, idx) => (
+            {data.map((row, idx) => (
               <tr key={idx} className="border-b border-hairline-soft hover:bg-surface-soft transition-colors">
                 <td className="px-4 py-3 text-ink font-medium">{new Date(row.created_at).toLocaleTimeString('id-ID')}</td>
                 <td className="px-4 py-3 text-ink">{row.suhu_val !== undefined ? Number(row.suhu_val).toFixed(1) : '-'}°C</td>
@@ -66,6 +66,30 @@ export default function FuzzyTable({ data }) {
           </tbody>
         </table>
       </div>
+
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-hairline">
+          <button 
+            onClick={() => onPageChange(Math.max(1, page - 1))}
+            disabled={page === 1}
+            className="flex items-center gap-1 text-xs font-semibold text-slate hover:text-ink disabled:opacity-30 disabled:hover:text-slate transition-colors"
+          >
+            <ChevronLeft size={16} />
+            Prev
+          </button>
+          <span className="text-xs font-medium text-slate">
+            Hal {page} dari {totalPages}
+          </span>
+          <button 
+            onClick={() => onPageChange(Math.min(totalPages, page + 1))}
+            disabled={page === totalPages}
+            className="flex items-center gap-1 text-xs font-semibold text-slate hover:text-ink disabled:opacity-30 disabled:hover:text-slate transition-colors"
+          >
+            Next
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

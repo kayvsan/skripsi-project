@@ -1,13 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Droplet, ChevronLeft, ChevronRight } from 'lucide-react';
 
-export default function IrrigationLogs({ logs }) {
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-
-  const totalPages = Math.max(1, Math.ceil(logs.length / itemsPerPage));
-  const currentLogs = logs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
+export default function IrrigationLogs({ logs, page, totalPages, onPageChange }) {
   return (
     <div className="card-base p-6 h-full flex flex-col justify-between">
       <div>
@@ -17,7 +11,7 @@ export default function IrrigationLogs({ logs }) {
         </h3>
         
         <div className="space-y-3">
-          {currentLogs.map((log, idx) => (
+          {logs.map((log, idx) => (
             <div key={idx} className="bg-surface p-3 rounded-md border border-hairline flex justify-between items-center">
               <div>
                 <p className="text-sm font-semibold text-ink">{new Date(log.created_at).toLocaleTimeString('id-ID')}</p>
@@ -40,19 +34,19 @@ export default function IrrigationLogs({ logs }) {
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-6 pt-4 border-t border-hairline">
           <button 
-            onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-            disabled={currentPage === 1}
+            onClick={() => onPageChange(Math.max(1, page - 1))}
+            disabled={page === 1}
             className="flex items-center gap-1 text-xs font-semibold text-slate hover:text-ink disabled:opacity-30 disabled:hover:text-slate transition-colors"
           >
             <ChevronLeft size={16} />
             Prev
           </button>
           <span className="text-xs font-medium text-slate">
-            Hal {currentPage} dari {totalPages}
+            Hal {page} dari {totalPages}
           </span>
           <button 
-            onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-            disabled={currentPage === totalPages}
+            onClick={() => onPageChange(Math.min(totalPages, page + 1))}
+            disabled={page === totalPages}
             className="flex items-center gap-1 text-xs font-semibold text-slate hover:text-ink disabled:opacity-30 disabled:hover:text-slate transition-colors"
           >
             Next

@@ -6,14 +6,8 @@ const db = require('../db');
 router.get('/', async (req, res) => {
   try {
     const { limit = 50, offset = 0, startDate, endDate } = req.query;
-    let query = `
-      SELECT 
-        f.id,
-        f.suhu_val, 
-        f.kelembapan_udara_val, 
-        f.kelembapan_tanah_val, 
-        f.output_durasi,
-        COALESCE(f.created_at, s.created_at) as created_at
+    
+    let baseQuery = `
       FROM fuzzy_decisions f
       LEFT JOIN sensor_data s ON f.sensor_data_id = s.id
       WHERE 1=1
@@ -22,22 +16,45 @@ router.get('/', async (req, res) => {
 
     if (startDate) {
       params.push(startDate);
-      query += ` AND COALESCE(f.created_at, s.created_at) >= $${params.length}`;
+      baseQuery += ` AND COALESCE(f.created_at, s.created_at) >= $${params.length}`;
     }
 
     if (endDate) {
       params.push(endDate);
-      query += ` AND COALESCE(f.created_at, s.created_at) <= $${params.length}`;
+      baseQuery += ` AND COALESCE(f.created_at, s.created_at) <= $${params.length}`;
     }
 
+    // Get Total Count
+    const countResult = await db.query(`SELECT COUNT(*) ${baseQuery}`, params);
+    const total = parseInt(countResult.rows[0].count);
+
+    // Get Data
+    let dataQuery = `
+      SELECT 
+        f.id,
+        f.suhu_val, 
+        f.kelembapan_udara_val, 
+        f.kelembapan_tanah_val, 
+        f.output_durasi,
+        COALESCE(f.created_at, s.created_at) as created_at
+      ${baseQuery}
+      ORDER BY COALESCE(f.created_at, s.created_at) DESC
+    `;
+    
     params.push(limit);
-    query += ` ORDER BY COALESCE(f.created_at, s.created_at) DESC LIMIT $${params.length}`;
+    dataQuery += ` LIMIT $${params.length}`;
     
     params.push(offset);
-    query += ` OFFSET $${params.length}`;
+    dataQuery += ` OFFSET $${params.length}`;
 
-    const result = await db.query(query, params);
-    res.json(result.rows);
+    const result = await db.query(dataQuery, params);
+    
+    res.json({
+      data: result.rows,
+      total: total,
+      page: Math.floor(offset / limit) + 1,
+      totalPages: Math.ceil(total / limit) || 1
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Internal Server Error' });
