@@ -1,11 +1,16 @@
 import paho.mqtt.client as mqtt
 import json
 import os
+import time
 from dotenv import load_dotenv
 from fuzzy_engine import engine
 from db import db
 
 load_dotenv()
+
+# Interval penyimpanan data ke database (dalam detik)
+# Default: 900 detik = 15 menit
+DB_SAVE_INTERVAL = int(os.getenv("DB_SAVE_INTERVAL", 900))
 
 class MQTTHandler:
     def __init__(self):
@@ -20,8 +25,13 @@ class MQTTHandler:
         self.topic_status = os.getenv("MQTT_TOPIC_STATUS", "chili/pump/status")
         self.threshold = float(os.getenv("PUMP_THRESHOLD", 20))
 
+        # Timer untuk throttle penyimpanan ke database
+        # Set ke 0 agar data pertama langsung disimpan saat service mulai
+        self.last_db_save = 0
+
     def on_connect(self, client, userdata, flags, rc):
         print(f"Connected to MQTT Broker with result code {rc}")
+        print(f"DB save interval: {DB_SAVE_INTERVAL} seconds ({DB_SAVE_INTERVAL // 60} minutes)")
         client.subscribe(self.topic_sensor)
 
     def on_message(self, client, userdata, msg):
@@ -37,23 +47,28 @@ class MQTTHandler:
 
             print(f"Received data: Suhu={suhu}, Hum={humidity}, Soil={soil}")
 
-            # 1. Save to DB
-            sensor_id = db.save_sensor_data(suhu, humidity, soil)
-
-            # 2. Run Fuzzy Logic
+            # 1. Run Fuzzy Logic (SELALU jalan setiap data masuk - real-time)
             duration = engine.calculate(suhu, humidity, soil)
             print(f"Fuzzy decision: duration={duration}%")
 
-            # 3. Save Decision to DB
-            db.save_fuzzy_decision(sensor_id, {'suhu': suhu, 'humidity': humidity, 'soil': soil}, duration)
+            # 2. Simpan ke DB hanya setiap 15 menit (sensor_data + fuzzy_decision)
+            current_time = time.time()
+            if current_time - self.last_db_save >= DB_SAVE_INTERVAL:
+                self.last_db_save = current_time
+                sensor_id = db.save_sensor_data(suhu, humidity, soil)
+                db.save_fuzzy_decision(sensor_id, {'suhu': suhu, 'humidity': humidity, 'soil': soil}, duration)
+                print(f"[DB] Data saved to database (next save in {DB_SAVE_INTERVAL // 60} minutes)")
+            else:
+                remaining = DB_SAVE_INTERVAL - (current_time - self.last_db_save)
+                print(f"[DB] Skipped DB save (next save in {int(remaining)}s)")
 
-            # 4. Control Logic & Logs
+            # 3. Control Logic & Logs (SELALU jalan - pompa harus responsif)
             if duration > self.threshold:
                 # Command to ESP32
                 command = {"action": "pump_on", "duration_percent": duration}
                 self.client.publish(self.topic_control, json.dumps(command))
                 
-                # Log to DB
+                # Log penyiraman SELALU disimpan (event penting)
                 db.save_irrigation_log(duration)
                 
                 # Broadcast status
