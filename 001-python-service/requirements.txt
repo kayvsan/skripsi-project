@@ -5,3 +5,4 @@ psycopg[binary]
 psycopg-pool
 python-dotenv==1.0.1
 matplotlib
+APScheduler>=3.10.0

@@ -35,3 +35,17 @@ CREATE TABLE IF NOT EXISTS irrigation_logs (
 -- Indexing for performance on history queries
 CREATE INDEX IF NOT EXISTS idx_sensor_data_created_at ON sensor_data(created_at);
 CREATE INDEX IF NOT EXISTS idx_irrigation_logs_created_at ON irrigation_logs(created_at);
+
+-- 4. Table for schedule check logs (pagi, siang, malam)
+CREATE TABLE IF NOT EXISTS schedule_logs (
+    id SERIAL PRIMARY KEY,
+    session VARCHAR(10) NOT NULL,          -- 'pagi', 'siang', 'malam'
+    checked_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    suhu FLOAT,
+    kelembapan_udara FLOAT,
+    kelembapan_tanah FLOAT,
+    fuzzy_output FLOAT,
+    action VARCHAR(20),                    -- 'pump_on' atau 'skip'
+    skip_reason TEXT                       -- 'soil_wet', 'below_threshold', 'no_data'
+);
+CREATE INDEX IF NOT EXISTS idx_schedule_logs_checked_at ON schedule_logs(checked_at);

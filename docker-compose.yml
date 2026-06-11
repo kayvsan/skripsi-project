@@ -56,6 +56,7 @@ services:
       DB_USER: kams
       DB_PASSWORD: kam439
       PUMP_THRESHOLD: 20
+      TZ: Asia/Jakarta
     depends_on:
       db:
         condition: service_healthy
