@@ -191,21 +191,52 @@ function App() {
                 
                 {stats && (
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="glass-section p-5 flex flex-col justify-center border-l-4 border-l-[#f59e0b]">
-                      <p className="text-[11px] sm:text-xs text-text-label uppercase tracking-wider mb-1">Rata-Rata Suhu</p>
-                      <p className="text-xl sm:text-2xl font-bold text-text-heading">{Number(stats.averageToday?.avg_suhu || 0).toFixed(1)}°C</p>
+                    {/* Card 1: Suhu */}
+                    <div className="glass-section p-5 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-accent-amber-soft rounded-full blur-2xl -mr-10 -mt-10 transition-opacity duration-500 group-hover:opacity-100 opacity-40"></div>
+                      <div className="flex items-center gap-2 mb-2.5 relative z-10">
+                        <Thermometer size={15} className="text-accent-amber drop-shadow-[0_0_4px_rgba(245,158,11,0.5)]" />
+                        <p className="text-[10px] sm:text-xs text-text-label uppercase tracking-widest font-semibold">Rata-Rata Suhu</p>
+                      </div>
+                      <p className="text-2xl sm:text-3xl font-bold text-text-heading tracking-tight relative z-10">
+                        {Number(stats.averageToday?.avg_suhu || 0).toFixed(1)}<span className="text-sm sm:text-base text-text-dim font-medium ml-1">°C</span>
+                      </p>
                     </div>
-                    <div className="glass-section p-5 flex flex-col justify-center border-l-4 border-l-[#14b8a6]">
-                      <p className="text-[11px] sm:text-xs text-text-label uppercase tracking-wider mb-1">Rata Kelembapan Udara</p>
-                      <p className="text-xl sm:text-2xl font-bold text-text-heading">{Number(stats.averageToday?.avg_hum || 0).toFixed(1)}%</p>
+
+                    {/* Card 2: Kelembapan Udara */}
+                    <div className="glass-section p-5 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-accent-teal-soft rounded-full blur-2xl -mr-10 -mt-10 transition-opacity duration-500 group-hover:opacity-100 opacity-40"></div>
+                      <div className="flex items-center gap-2 mb-2.5 relative z-10">
+                        <Droplets size={15} className="text-accent-teal drop-shadow-[0_0_4px_rgba(20,184,166,0.5)]" />
+                        <p className="text-[10px] sm:text-xs text-text-label uppercase tracking-widest font-semibold truncate">Kelembapan Udara</p>
+                      </div>
+                      <p className="text-2xl sm:text-3xl font-bold text-text-heading tracking-tight relative z-10">
+                        {Number(stats.averageToday?.avg_hum || 0).toFixed(1)}<span className="text-sm sm:text-base text-text-dim font-medium ml-1">%</span>
+                      </p>
                     </div>
-                    <div className="glass-section p-5 flex flex-col justify-center border-l-4 border-l-[#10b981]">
-                      <p className="text-[11px] sm:text-xs text-text-label uppercase tracking-wider mb-1">Rata Kelembapan Tanah</p>
-                      <p className="text-xl sm:text-2xl font-bold text-text-heading">{Number(stats.averageToday?.avg_soil || 0).toFixed(1)}%</p>
+
+                    {/* Card 3: Kelembapan Tanah */}
+                    <div className="glass-section p-5 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-accent-green-soft rounded-full blur-2xl -mr-10 -mt-10 transition-opacity duration-500 group-hover:opacity-100 opacity-40"></div>
+                      <div className="flex items-center gap-2 mb-2.5 relative z-10">
+                        <Sprout size={15} className="text-accent-green drop-shadow-[0_0_4px_rgba(16,185,129,0.5)]" />
+                        <p className="text-[10px] sm:text-xs text-text-label uppercase tracking-widest font-semibold truncate">Kelembapan Tanah</p>
+                      </div>
+                      <p className="text-2xl sm:text-3xl font-bold text-text-heading tracking-tight relative z-10">
+                        {Number(stats.averageToday?.avg_soil || 0).toFixed(1)}<span className="text-sm sm:text-base text-text-dim font-medium ml-1">%</span>
+                      </p>
                     </div>
-                    <div className="glass-section p-5 flex flex-col justify-center border-l-4 border-l-[#8b5cf6]">
-                      <p className="text-[11px] sm:text-xs text-text-label uppercase tracking-wider mb-1">Total Penyiraman</p>
-                      <p className="text-xl sm:text-2xl font-bold text-text-heading">{stats.totalIrrigationToday || 0} kali</p>
+
+                    {/* Card 4: Total Penyiraman */}
+                    <div className="glass-section p-5 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-accent-purple-soft rounded-full blur-2xl -mr-10 -mt-10 transition-opacity duration-500 group-hover:opacity-100 opacity-40"></div>
+                      <div className="flex items-center gap-2 mb-2.5 relative z-10">
+                        <Activity size={15} className="text-accent-purple drop-shadow-[0_0_4px_rgba(139,92,246,0.5)]" />
+                        <p className="text-[10px] sm:text-xs text-text-label uppercase tracking-widest font-semibold truncate">Total Penyiraman</p>
+                      </div>
+                      <p className="text-2xl sm:text-3xl font-bold text-text-heading tracking-tight relative z-10">
+                        {stats.totalIrrigationToday || 0}<span className="text-sm sm:text-base text-text-dim font-medium ml-1.5">kali</span>
+                      </p>
                     </div>
                   </div>
                 )}
