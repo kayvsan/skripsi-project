@@ -123,171 +123,147 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-surface-soft">
-      {/* Clean Top Header (Notion App Style) */}
-      <header className="bg-canvas border-b border-hairline sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-0 sm:h-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-brand-green/10 rounded-md">
-                <Sprout className="text-brand-green" size={20} />
-              </div>
-              <h1 className="text-[18px] font-semibold tracking-tight text-ink">
-                ChiliSmart Dashboard
-              </h1>
-            </div>
-            <div className={`flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${isConnected ? 'bg-brand-green/10 text-brand-green border-brand-green/20' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
-              <div className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-brand-green' : 'bg-red-500'}`} />
-              {isConnected ? 'Connected' : 'Disconnected'}
-            </div>
-          </div>
-
-          <div className="flex items-center flex-wrap gap-2 w-full sm:w-auto mt-1 sm:mt-0">
-            <div className="flex items-center flex-1 sm:flex-none justify-between gap-1 sm:gap-2 bg-surface p-1 rounded-md border border-hairline min-w-[220px]">
-              <input 
-                type="date" 
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
-                className="bg-transparent text-ink text-[11px] sm:text-sm px-1 sm:px-2 py-1 focus:outline-none w-full"
-              />
-              <span className="text-slate text-xs sm:text-sm">-</span>
-              <input 
-                type="date" 
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
-                className="bg-transparent text-ink text-[11px] sm:text-sm px-1 sm:px-2 py-1 focus:outline-none w-full"
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <button 
-                onClick={fetchData}
-                className="text-ink border border-hairline-strong font-medium inline-flex items-center justify-center transition-colors duration-150 hover:bg-surface rounded-md px-3 py-[7px] gap-2 text-sm shrink-0"
-              >
-                <RefreshCcw size={14} className={loading ? 'animate-spin' : ''} />
-                <span className="hidden sm:inline">Refresh</span>
-              </button>
-              <a 
-                href={downloadHistoryUrl}
-                className="button-primary text-sm py-[7px] px-3 gap-2 shrink-0"
-              >
-                <Download size={14} />
-                <span className="hidden sm:inline">Export</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-20">
-
-      <div className="mt-8">
-        <TabNav activeTab={activeTab} setActiveTab={setActiveTab} />
-      </div>
-
-      <div className="mt-6 pb-20">
-        {activeTab === 'monitoring' ? (
-          <main className="space-y-8">
+    <div className="min-h-screen relative py-4 sm:py-8">
+      {/* Main Glass Panel Container */}
+      <div className="max-w-[1400px] mx-auto px-2 sm:px-6 lg:px-8 relative z-20">
+        <div className="glass-panel overflow-hidden flex flex-col min-h-[90vh] animate-fade-in">
           
-          {/* Stats Summary Section */}
-          {stats && (
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="card-base p-5 flex items-center justify-between border-l-4 border-l-brand-teal">
+          {/* Header Inside Panel */}
+          <header className="bg-glass-header border-b border-divider px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sticky top-0 z-50">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-status-on-bg rounded-xl">
+                  <Sprout className="text-status-on" size={24} />
+                </div>
                 <div>
-                  <p className="text-[13px] text-slate font-semibold uppercase tracking-wider mb-1">Rata-Rata Suhu Hari Ini</p>
-                  <p className="text-xl font-bold text-ink">{Number(stats.averageToday?.avg_suhu || 0).toFixed(1)}°C</p>
+                  <h1 className="text-xl font-bold tracking-tight text-text-heading leading-none">ChiliSmart</h1>
+                  <p className="text-xs text-text-label mt-1">Dashboard & Monitoring</p>
                 </div>
               </div>
-              <div className="card-base p-5 flex items-center justify-between border-l-4 border-l-brand-orange">
-                <div>
-                  <p className="text-[13px] text-slate font-semibold uppercase tracking-wider mb-1">Rata-Rata Kelembapan Udara</p>
-                  <p className="text-xl font-bold text-ink">{Number(stats.averageToday?.avg_hum || 0).toFixed(1)}%</p>
-                </div>
-              </div>
-              <div className="card-base p-5 flex items-center justify-between border-l-4 border-l-brand-green">
-                <div>
-                  <p className="text-[13px] text-slate font-semibold uppercase tracking-wider mb-1">Rata-Rata Kelembapan Tanah</p>
-                  <p className="text-xl font-bold text-ink">{Number(stats.averageToday?.avg_soil || 0).toFixed(1)}%</p>
-                </div>
-              </div>
-              <div className="card-base p-5 flex items-center justify-between border-l-4 border-l-primary">
-                <div>
-                  <p className="text-[13px] text-slate font-semibold uppercase tracking-wider mb-1">Total Penyiraman</p>
-                  <p className="text-xl font-bold text-ink">{stats.totalIrrigationToday || 0} kali</p>
-                </div>
+              <div className="h-8 w-px bg-divider hidden sm:block mx-1"></div>
+              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold ${isConnected ? 'bg-status-on-bg text-status-on' : 'bg-status-off-bg text-status-off'}`}>
+                <span className="relative flex h-2 w-2">
+                  {isConnected && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-status-on opacity-75"></span>}
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${isConnected ? 'bg-status-on' : 'bg-status-off'}`}></span>
+                </span>
+                {isConnected ? 'System Online' : 'Offline'}
               </div>
             </div>
-          )}
-          {/* Top Section: Metrics & Pump Status */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
-            <StatCard 
-              title="Suhu" 
-              value={currentData.suhu} 
-              unit="°C" 
-              icon={Thermometer} 
-              color="#f97316"
-              trend={getTrend(currentData.suhu, prevData.suhu)}
-            />
-            <StatCard 
-              title="Kelembapan Udara" 
-              value={currentData.kelembapanUdara} 
-              unit="%" 
-              icon={Droplets} 
-              color="#14b8a6"
-              trend={getTrend(currentData.kelembapanUdara, prevData.kelembapanUdara)}
-            />
-            <StatCard 
-              title="Kelembapan Tanah" 
-              value={currentData.kelembapanTanah} 
-              unit="%" 
-              icon={Sprout} 
-              color="#10b981"
-              trend={getTrend(currentData.kelembapanTanah, prevData.kelembapanTanah)}
-            />
-          </div>
-          <div className="lg:col-span-1">
-            <PumpStatus status={pumpStatus} />
+
+            <div className="flex items-center flex-wrap gap-3 w-full sm:w-auto">
+              <div className="flex items-center justify-between gap-2 glass-item p-1.5 px-3 min-w-[240px] flex-1 sm:flex-none">
+                <input 
+                  type="date" 
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="bg-transparent text-text-body text-sm focus:outline-none w-full [color-scheme:dark]"
+                />
+                <span className="text-text-dim">-</span>
+                <input 
+                  type="date" 
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="bg-transparent text-text-body text-sm focus:outline-none w-full [color-scheme:dark]"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <button onClick={fetchData} className="button-secondary-on-dark text-sm py-[9px] px-3 gap-2 shrink-0">
+                  <RefreshCcw size={16} className={loading ? 'animate-spin' : ''} />
+                  <span className="hidden sm:inline">Sync</span>
+                </button>
+                <a href={downloadHistoryUrl} className="button-primary text-sm py-[9px] px-4 gap-2 shrink-0">
+                  <Download size={16} />
+                  <span className="hidden sm:inline">Export</span>
+                </a>
+              </div>
+            </div>
+          </header>
+
+          {/* Body Inside Panel */}
+          <div className="p-4 sm:p-8 flex-1">
+            <div className="mb-8 border-b border-divider pb-4">
+              <TabNav activeTab={activeTab} setActiveTab={setActiveTab} />
+            </div>
+
+            <div className="pb-8">
+              {activeTab === 'monitoring' ? (
+                <main className="space-y-8">
+                
+                {stats && (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="glass-section p-5 flex flex-col justify-center border-l-4 border-l-[#f59e0b]">
+                      <p className="text-[11px] sm:text-xs text-text-label uppercase tracking-wider mb-1">Rata-Rata Suhu</p>
+                      <p className="text-xl sm:text-2xl font-bold text-text-heading">{Number(stats.averageToday?.avg_suhu || 0).toFixed(1)}°C</p>
+                    </div>
+                    <div className="glass-section p-5 flex flex-col justify-center border-l-4 border-l-[#14b8a6]">
+                      <p className="text-[11px] sm:text-xs text-text-label uppercase tracking-wider mb-1">Rata Kelembapan Udara</p>
+                      <p className="text-xl sm:text-2xl font-bold text-text-heading">{Number(stats.averageToday?.avg_hum || 0).toFixed(1)}%</p>
+                    </div>
+                    <div className="glass-section p-5 flex flex-col justify-center border-l-4 border-l-[#10b981]">
+                      <p className="text-[11px] sm:text-xs text-text-label uppercase tracking-wider mb-1">Rata Kelembapan Tanah</p>
+                      <p className="text-xl sm:text-2xl font-bold text-text-heading">{Number(stats.averageToday?.avg_soil || 0).toFixed(1)}%</p>
+                    </div>
+                    <div className="glass-section p-5 flex flex-col justify-center border-l-4 border-l-[#8b5cf6]">
+                      <p className="text-[11px] sm:text-xs text-text-label uppercase tracking-wider mb-1">Total Penyiraman</p>
+                      <p className="text-xl sm:text-2xl font-bold text-text-heading">{stats.totalIrrigationToday || 0} kali</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                  <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <StatCard 
+                      title="Suhu" 
+                      value={currentData.suhu} 
+                      unit="°C" 
+                      icon={Thermometer} 
+                      color="#f59e0b"
+                      trend={getTrend(currentData.suhu, prevData.suhu)}
+                    />
+                    <StatCard 
+                      title="Kelembapan Udara" 
+                      value={currentData.kelembapanUdara} 
+                      unit="%" 
+                      icon={Droplets} 
+                      color="#14b8a6"
+                      trend={getTrend(currentData.kelembapanUdara, prevData.kelembapanUdara)}
+                    />
+                    <StatCard 
+                      title="Kelembapan Tanah" 
+                      value={currentData.kelembapanTanah} 
+                      unit="%" 
+                      icon={Sprout} 
+                      color="#10b981"
+                      trend={getTrend(currentData.kelembapanTanah, prevData.kelembapanTanah)}
+                    />
+                  </div>
+                  <div className="lg:col-span-1">
+                    <PumpStatus status={pumpStatus} />
+                  </div>
+                </div>
+
+                <section>
+                  <TrendChart data={historyData} />
+                </section>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-2 space-y-6">
+                    <HistoryTable data={historyData} page={historyPage} totalPages={historyTotalPages} onPageChange={setHistoryPage} />
+                    <FuzzyTable data={fuzzyDecisions} page={fuzzyPage} totalPages={fuzzyTotalPages} onPageChange={setFuzzyPage} />
+                  </div>
+                  <div className="lg:col-span-1">
+                    <IrrigationLogs logs={irrigationLogs} page={irrigationPage} totalPages={irrigationTotalPages} onPageChange={setIrrigationPage} />
+                  </div>
+                </div>
+              </main>
+              ) : (
+                <KpiPage startDate={startDate} endDate={endDate} />
+              )}
+            </div>
           </div>
         </div>
-
-        {/* Middle Section: Main Chart */}
-        <section>
-          <TrendChart data={historyData} />
-        </section>
-
-        {/* Bottom Section: History Table & Logs */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <HistoryTable 
-              data={historyData} 
-              page={historyPage} 
-              totalPages={historyTotalPages} 
-              onPageChange={setHistoryPage} 
-            />
-            <FuzzyTable 
-              data={fuzzyDecisions} 
-              page={fuzzyPage} 
-              totalPages={fuzzyTotalPages} 
-              onPageChange={setFuzzyPage} 
-            />
-          </div>
-          <div className="lg:col-span-1">
-            <IrrigationLogs 
-              logs={irrigationLogs} 
-              page={irrigationPage}
-              totalPages={irrigationTotalPages}
-              onPageChange={setIrrigationPage}
-            />
-          </div>
-        </div>
-      </main>
-      ) : (
-        <KpiPage startDate={startDate} endDate={endDate} />
-      )}
       </div>
     </div>
-  </div>
   );
 }
 
