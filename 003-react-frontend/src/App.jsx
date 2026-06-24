@@ -10,6 +10,7 @@ import PumpStatus from './components/PumpStatus';
 import IrrigationLogs from './components/IrrigationLogs';
 import { useMqtt } from './lib/mqtt';
 import { getHistory, getIrrigationLogs, getStats, getFuzzyDecisions, downloadHistoryUrl } from './lib/api';
+import SmartIrigationLogo from './assets/SmartIrigation.svg';
 
 function App() {
   const { isConnected, liveData, pumpStatus } = useMqtt();
@@ -131,14 +132,8 @@ function App() {
           {/* Header Inside Panel */}
           <header className="bg-glass-header border-b border-divider px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sticky top-0 z-50">
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-status-on-bg rounded-xl">
-                  <Sprout className="text-status-on" size={24} />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold tracking-tight text-text-heading leading-none">ChiliSmart</h1>
-                  <p className="text-xs text-text-label mt-1">Dashboard & Monitoring</p>
-                </div>
+              <div className="flex items-center -ml-2 mr-2">
+                <img src={SmartIrigationLogo} alt="Smart Irrigation Logo" className="h-20 sm:h-24 w-auto object-contain" />
               </div>
               <div className="h-8 w-px bg-divider hidden sm:block mx-1"></div>
               <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-semibold ${isConnected ? 'bg-status-on-bg text-status-on' : 'bg-status-off-bg text-status-off'}`}>
