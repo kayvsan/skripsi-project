@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -60,8 +61,6 @@
 }
 
 @layer base {
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
   body {
     @apply bg-bg-deep text-text-body font-inter min-h-screen antialiased overflow-x-hidden;
     background-image: radial-gradient(circle at 15% 50%, var(--color-bg-ambient), transparent 45%),
