@@ -11,10 +11,10 @@ class FuzzyIrrigationEngine:
         self.duration = ctrl.Consequent(np.arange(0, 61, 1), 'duration')
 
         # 2. Define Membership Functions based on Manuscript
-        # Soil Moisture (Table 6): Dingin, Normal, Panas
-        self.soil_moisture['dingin'] = fuzz.trapmf(self.soil_moisture.universe, [15, 15, 22, 24])
-        self.soil_moisture['normal'] = fuzz.trapmf(self.soil_moisture.universe, [22, 24, 28, 30])
-        self.soil_moisture['panas'] = fuzz.trapmf(self.soil_moisture.universe, [28, 30, 40, 40])
+        # Soil Moisture (Table 6): Dingin (Kering), Normal, Panas (Basah)
+        self.soil_moisture['dingin'] = fuzz.trapmf(self.soil_moisture.universe, [0, 0, 55, 60])
+        self.soil_moisture['normal'] = fuzz.trapmf(self.soil_moisture.universe, [55, 60, 80, 85])
+        self.soil_moisture['panas'] = fuzz.trapmf(self.soil_moisture.universe, [80, 85, 100, 100])
 
         # Humidity (Table 8): Rendah, Normal, Tinggi
         self.humidity['rendah'] = fuzz.trapmf(self.humidity.universe, [0, 0, 65, 70])

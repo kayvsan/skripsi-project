@@ -18,7 +18,7 @@ export default function IrrigationLogs({ logs, page, totalPages, onPageChange })
                 <p className="text-xs text-text-dim mt-0.5">{new Date(log.created_at).toLocaleDateString('id-ID')}</p>
               </div>
               <div className="text-right">
-                <p className="text-sm font-bold text-accent-purple drop-shadow-[0_0_4px_rgba(139,92,246,0.4)]">{((Number(log.durasi) / 100) * 120).toFixed(1)} dtk</p>
+                <p className="text-sm font-bold text-accent-purple drop-shadow-[0_0_4px_rgba(139,92,246,0.4)]">{Number(log.durasi).toFixed(1)} dtk</p>
                 <p className="text-xs text-text-dim mt-0.5">Air dialirkan</p>
               </div>
             </div>
