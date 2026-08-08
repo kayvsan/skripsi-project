@@ -31,6 +31,7 @@ export default function FuzzyTable({ data, page, totalPages, onPageChange }) {
             <tr>
               <th className="px-4 py-3 font-semibold text-text-label">Waktu</th>
               <th className="px-4 py-3 font-semibold text-text-label">Suhu Input</th>
+              <th className="px-4 py-3 font-semibold text-text-label">Udara Input</th>
               <th className="px-4 py-3 font-semibold text-text-label">Tanah Input</th>
               <th className="px-4 py-3 font-semibold text-text-label">Durasi (s)</th>
               <th className="px-4 py-3 font-semibold text-text-label">Kategori</th>
@@ -41,6 +42,7 @@ export default function FuzzyTable({ data, page, totalPages, onPageChange }) {
               <tr key={idx} className="border-b border-[rgba(255,255,255,0.02)] hover:bg-[rgba(255,255,255,0.05)] transition-colors">
                 <td className="px-4 py-3 text-text-heading font-medium">{new Date(row.created_at).toLocaleTimeString('id-ID')}</td>
                 <td className="px-4 py-3 text-text-body">{row.suhu_val !== undefined ? Number(row.suhu_val).toFixed(1) : '-'}°C</td>
+                <td className="px-4 py-3 text-text-body">{row.kelembapan_udara_val !== undefined ? Number(row.kelembapan_udara_val).toFixed(1) : '-'}%</td>
                 <td className="px-4 py-3 text-text-body">{row.kelembapan_tanah_val !== undefined ? Number(row.kelembapan_tanah_val).toFixed(1) : '-'}%</td>
                 <td className="px-4 py-3 text-text-body">
                   {row.output_durasi !== undefined ? (
@@ -59,7 +61,7 @@ export default function FuzzyTable({ data, page, totalPages, onPageChange }) {
             ))}
             {data.length === 0 && (
               <tr>
-                <td colSpan="5" className="px-4 py-8 text-center text-text-dim">Tidak ada data keputusan fuzzy</td>
+                <td colSpan="6" className="px-4 py-8 text-center text-text-dim">Tidak ada data keputusan fuzzy</td>
               </tr>
             )}
           </tbody>
