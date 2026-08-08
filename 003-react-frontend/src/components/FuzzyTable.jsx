@@ -3,21 +3,20 @@ import { BrainCircuit, Droplets, ChevronLeft, ChevronRight } from 'lucide-react'
 
 export default function FuzzyTable({ data, page, totalPages, onPageChange }) {
   const getCategoryColor = (category) => {
-    switch(category) {
-      case 'TIDAK PERLU': return 'bg-status-off-bg text-status-off';
-      case 'SEDIKIT': return 'bg-accent-teal-soft text-accent-teal';
+    const cat = category ? category.toUpperCase() : '';
+    switch(cat) {
+      case 'SINGKAT': return 'bg-accent-teal-soft text-accent-teal';
       case 'SEDANG': return 'bg-accent-green-soft text-accent-green';
-      case 'BANYAK': return 'bg-accent-purple-soft text-accent-purple';
+      case 'LAMA': return 'bg-accent-purple-soft text-accent-purple';
       default: return 'bg-glass-item text-text-label';
     }
   };
 
   const getCategoryText = (durasi) => {
     const d = Number(durasi);
-    if (!d || d <= 20) return 'TIDAK PERLU';
-    if (d <= 45) return 'SEDIKIT';
-    if (d <= 70) return 'SEDANG';
-    return 'BANYAK';
+    if (!d || d <= 25) return 'SINGKAT';
+    if (d <= 45) return 'SEDANG';
+    return 'LAMA';
   };
 
   return (
@@ -46,7 +45,7 @@ export default function FuzzyTable({ data, page, totalPages, onPageChange }) {
                 <td className="px-4 py-3 text-text-body">
                   {row.output_durasi !== undefined ? (
                     <div className="flex items-center gap-1.5">
-                      <span className="font-semibold text-text-heading">{((Number(row.output_durasi) / 100) * 120).toFixed(1)} detik</span>
+                      <span className="font-semibold text-text-heading">{Number(row.output_durasi).toFixed(1)} detik</span>
                       {Number(row.output_durasi) > 0 && <Droplets size={14} className="text-accent-teal" />}
                     </div>
                   ) : '-'}
