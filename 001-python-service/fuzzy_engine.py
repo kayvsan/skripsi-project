@@ -5,67 +5,68 @@ from skfuzzy import control as ctrl
 class FuzzyIrrigationEngine:
     def __init__(self):
         # 1. New Antecedent/Consequent objects hold universe variables and membership functions
-        self.soil_moisture = ctrl.Antecedent(np.arange(0, 101, 1), 'soil_moisture')
-        self.humidity = ctrl.Antecedent(np.arange(0, 101, 1), 'humidity')
-        self.temperature = ctrl.Antecedent(np.arange(15, 41, 1), 'temperature')
-        self.duration = ctrl.Consequent(np.arange(0, 61, 1), 'duration')
+        self.temperature = ctrl.Antecedent(np.arange(15, 41, 0.1), 'temperature')
+        self.humidity = ctrl.Antecedent(np.arange(0, 101, 0.1), 'humidity')
+        self.soil_moisture = ctrl.Antecedent(np.arange(0, 101, 0.1), 'soil_moisture')
+        self.duration = ctrl.Consequent(np.arange(0, 61, 0.1), 'duration')
 
-        # 2. Define Membership Functions based on Manuscript
-        # Soil Moisture (Table 6): Dingin (Kering), Normal, Panas (Basah)
-        self.soil_moisture['dingin'] = fuzz.trapmf(self.soil_moisture.universe, [0, 0, 55, 60])
-        self.soil_moisture['normal'] = fuzz.trapmf(self.soil_moisture.universe, [55, 60, 80, 85])
-        self.soil_moisture['panas'] = fuzz.trapmf(self.soil_moisture.universe, [80, 85, 100, 100])
+        # 2. Define Membership Functions based on fuzzy.py
+        # Suhu Udara (Dingin, Ideal, Panas)
+        self.temperature['dingin'] = fuzz.trimf(self.temperature.universe, [15, 15, 24])
+        self.temperature['ideal'] = fuzz.trapmf(self.temperature.universe, [22, 24, 28, 30])
+        self.temperature['panas'] = fuzz.trimf(self.temperature.universe, [28, 30, 40])
 
-        # Humidity (Table 8): Rendah, Normal, Tinggi
-        self.humidity['rendah'] = fuzz.trapmf(self.humidity.universe, [0, 0, 65, 70])
-        self.humidity['normal'] = fuzz.trimf(self.humidity.universe, [65, 75, 85])
-        self.humidity['tinggi'] = fuzz.trapmf(self.humidity.universe, [80, 85, 100, 100])
+        # Kelembapan Udara (Rendah, Ideal, Tinggi)
+        self.humidity['rendah'] = fuzz.trimf(self.humidity.universe, [0, 0, 70])
+        self.humidity['ideal'] = fuzz.trimf(self.humidity.universe, [65, 75, 85])
+        self.humidity['tinggi'] = fuzz.trimf(self.humidity.universe, [80, 85, 100])
 
-        # Temperature (Table 7): Dingin, Normal, Panas
-        self.temperature['dingin'] = fuzz.trapmf(self.temperature.universe, [15, 15, 22, 24])
-        self.temperature['normal'] = fuzz.trapmf(self.temperature.universe, [22, 24, 28, 30])
-        self.temperature['panas'] = fuzz.trapmf(self.temperature.universe, [28, 30, 40, 40])
+        # Kelembapan Tanah (Kering, Ideal, Basah)
+        self.soil_moisture['kering'] = fuzz.trimf(self.soil_moisture.universe, [0, 0, 60])
+        self.soil_moisture['ideal'] = fuzz.trapmf(self.soil_moisture.universe, [55, 60, 80, 85])
+        self.soil_moisture['basah'] = fuzz.trimf(self.soil_moisture.universe, [80, 85, 100])
 
-        # Duration (Table 9): Singkat, Sedang, Lama
-        self.duration['singkat'] = fuzz.trapmf(self.duration.universe, [0, 0, 10, 25])
+        # Durasi Penyiraman (Singkat, Sedang, Lama)
+        self.duration['singkat'] = fuzz.trimf(self.duration.universe, [0, 0, 25])
         self.duration['sedang'] = fuzz.trimf(self.duration.universe, [15, 30, 45])
-        self.duration['lama'] = fuzz.trapmf(self.duration.universe, [35, 50, 60, 60])
+        self.duration['lama'] = fuzz.trimf(self.duration.universe, [35, 50, 60])
 
-        # 3. Define 27 Rules (Table 10 in Manuscript)
-        # Note: Soil Moisture mapping -> Kering=dingin, Normal=normal, Basah=panas (based on Table 6 naming)
+        # 3. Define 27 Rules exactly like fuzzy.py
+        rule1 = ctrl.Rule(self.temperature['dingin'] & self.humidity['rendah'] & self.soil_moisture['kering'], self.duration['sedang'])
+        rule2 = ctrl.Rule(self.temperature['dingin'] & self.humidity['rendah'] & self.soil_moisture['ideal'], self.duration['sedang'])
+        rule3 = ctrl.Rule(self.temperature['dingin'] & self.humidity['rendah'] & self.soil_moisture['basah'], self.duration['singkat'])
         
-        # Soil Moisture = Kering (mapped to 'dingin')
-        rule1 = ctrl.Rule(self.soil_moisture['dingin'] & self.temperature['dingin'] & self.humidity['rendah'], self.duration['sedang'])
-        rule2 = ctrl.Rule(self.soil_moisture['dingin'] & self.temperature['dingin'] & self.humidity['normal'], self.duration['sedang'])
-        rule3 = ctrl.Rule(self.soil_moisture['dingin'] & self.temperature['dingin'] & self.humidity['tinggi'], self.duration['singkat'])
-        rule4 = ctrl.Rule(self.soil_moisture['dingin'] & self.temperature['normal'] & self.humidity['rendah'], self.duration['lama'])
-        rule5 = ctrl.Rule(self.soil_moisture['dingin'] & self.temperature['normal'] & self.humidity['normal'], self.duration['lama'])
-        rule6 = ctrl.Rule(self.soil_moisture['dingin'] & self.temperature['normal'] & self.humidity['tinggi'], self.duration['sedang'])
-        rule7 = ctrl.Rule(self.soil_moisture['dingin'] & self.temperature['panas'] & self.humidity['rendah'], self.duration['lama'])
-        rule8 = ctrl.Rule(self.soil_moisture['dingin'] & self.temperature['panas'] & self.humidity['normal'], self.duration['lama'])
-        rule9 = ctrl.Rule(self.soil_moisture['dingin'] & self.temperature['panas'] & self.humidity['tinggi'], self.duration['lama'])
-
-        # Soil Moisture = Normal (mapped to 'normal')
-        rule10 = ctrl.Rule(self.soil_moisture['normal'] & self.temperature['dingin'] & self.humidity['rendah'], self.duration['singkat'])
-        rule11 = ctrl.Rule(self.soil_moisture['normal'] & self.temperature['dingin'] & self.humidity['normal'], self.duration['singkat'])
-        rule12 = ctrl.Rule(self.soil_moisture['normal'] & self.temperature['dingin'] & self.humidity['tinggi'], self.duration['singkat'])
-        rule13 = ctrl.Rule(self.soil_moisture['normal'] & self.temperature['normal'] & self.humidity['rendah'], self.duration['sedang'])
-        rule14 = ctrl.Rule(self.soil_moisture['normal'] & self.temperature['normal'] & self.humidity['normal'], self.duration['sedang'])
-        rule15 = ctrl.Rule(self.soil_moisture['normal'] & self.temperature['normal'] & self.humidity['tinggi'], self.duration['singkat'])
-        rule16 = ctrl.Rule(self.soil_moisture['normal'] & self.temperature['panas'] & self.humidity['rendah'], self.duration['lama'])
-        rule17 = ctrl.Rule(self.soil_moisture['normal'] & self.temperature['panas'] & self.humidity['normal'], self.duration['sedang'])
-        rule18 = ctrl.Rule(self.soil_moisture['normal'] & self.temperature['panas'] & self.humidity['tinggi'], self.duration['sedang'])
-
-        # Soil Moisture = Basah (mapped to 'panas')
-        rule19 = ctrl.Rule(self.soil_moisture['panas'] & self.temperature['dingin'] & self.humidity['rendah'], self.duration['singkat'])
-        rule20 = ctrl.Rule(self.soil_moisture['panas'] & self.temperature['dingin'] & self.humidity['normal'], self.duration['singkat'])
-        rule21 = ctrl.Rule(self.soil_moisture['panas'] & self.temperature['dingin'] & self.humidity['tinggi'], self.duration['singkat'])
-        rule22 = ctrl.Rule(self.soil_moisture['panas'] & self.temperature['normal'] & self.humidity['rendah'], self.duration['singkat'])
-        rule23 = ctrl.Rule(self.soil_moisture['panas'] & self.temperature['normal'] & self.humidity['normal'], self.duration['singkat'])
-        rule24 = ctrl.Rule(self.soil_moisture['panas'] & self.temperature['normal'] & self.humidity['tinggi'], self.duration['singkat'])
-        rule25 = ctrl.Rule(self.soil_moisture['panas'] & self.temperature['panas'] & self.humidity['rendah'], self.duration['sedang'])
-        rule26 = ctrl.Rule(self.soil_moisture['panas'] & self.temperature['panas'] & self.humidity['normal'], self.duration['singkat'])
-        rule27 = ctrl.Rule(self.soil_moisture['panas'] & self.temperature['panas'] & self.humidity['tinggi'], self.duration['singkat'])
+        rule4 = ctrl.Rule(self.temperature['dingin'] & self.humidity['ideal'] & self.soil_moisture['kering'], self.duration['sedang'])
+        rule5 = ctrl.Rule(self.temperature['dingin'] & self.humidity['ideal'] & self.soil_moisture['ideal'], self.duration['singkat'])
+        rule6 = ctrl.Rule(self.temperature['dingin'] & self.humidity['ideal'] & self.soil_moisture['basah'], self.duration['singkat'])
+        
+        rule7 = ctrl.Rule(self.temperature['dingin'] & self.humidity['tinggi'] & self.soil_moisture['kering'], self.duration['sedang'])
+        rule8 = ctrl.Rule(self.temperature['dingin'] & self.humidity['tinggi'] & self.soil_moisture['ideal'], self.duration['singkat'])
+        rule9 = ctrl.Rule(self.temperature['dingin'] & self.humidity['tinggi'] & self.soil_moisture['basah'], self.duration['singkat'])
+        
+        rule10 = ctrl.Rule(self.temperature['ideal'] & self.humidity['rendah'] & self.soil_moisture['kering'], self.duration['lama'])
+        rule11 = ctrl.Rule(self.temperature['ideal'] & self.humidity['rendah'] & self.soil_moisture['ideal'], self.duration['sedang'])
+        rule12 = ctrl.Rule(self.temperature['ideal'] & self.humidity['rendah'] & self.soil_moisture['basah'], self.duration['singkat'])
+        
+        rule13 = ctrl.Rule(self.temperature['ideal'] & self.humidity['ideal'] & self.soil_moisture['kering'], self.duration['sedang'])
+        rule14 = ctrl.Rule(self.temperature['ideal'] & self.humidity['ideal'] & self.soil_moisture['ideal'], self.duration['sedang'])
+        rule15 = ctrl.Rule(self.temperature['ideal'] & self.humidity['ideal'] & self.soil_moisture['basah'], self.duration['singkat'])
+        
+        rule16 = ctrl.Rule(self.temperature['ideal'] & self.humidity['tinggi'] & self.soil_moisture['kering'], self.duration['sedang'])
+        rule17 = ctrl.Rule(self.temperature['ideal'] & self.humidity['tinggi'] & self.soil_moisture['ideal'], self.duration['singkat'])
+        rule18 = ctrl.Rule(self.temperature['ideal'] & self.humidity['tinggi'] & self.soil_moisture['basah'], self.duration['singkat'])
+        
+        rule19 = ctrl.Rule(self.temperature['panas'] & self.humidity['rendah'] & self.soil_moisture['kering'], self.duration['lama'])
+        rule20 = ctrl.Rule(self.temperature['panas'] & self.humidity['rendah'] & self.soil_moisture['ideal'], self.duration['lama'])
+        rule21 = ctrl.Rule(self.temperature['panas'] & self.humidity['rendah'] & self.soil_moisture['basah'], self.duration['sedang'])
+        
+        rule22 = ctrl.Rule(self.temperature['panas'] & self.humidity['ideal'] & self.soil_moisture['kering'], self.duration['lama'])
+        rule23 = ctrl.Rule(self.temperature['panas'] & self.humidity['ideal'] & self.soil_moisture['ideal'], self.duration['sedang'])
+        rule24 = ctrl.Rule(self.temperature['panas'] & self.humidity['ideal'] & self.soil_moisture['basah'], self.duration['sedang'])
+        
+        rule25 = ctrl.Rule(self.temperature['panas'] & self.humidity['tinggi'] & self.soil_moisture['kering'], self.duration['sedang'])
+        rule26 = ctrl.Rule(self.temperature['panas'] & self.humidity['tinggi'] & self.soil_moisture['ideal'], self.duration['sedang'])
+        rule27 = ctrl.Rule(self.temperature['panas'] & self.humidity['tinggi'] & self.soil_moisture['basah'], self.duration['singkat'])
 
         self.irrigation_ctrl = ctrl.ControlSystem([
             rule1, rule2, rule3, rule4, rule5, rule6, rule7, rule8, rule9,
